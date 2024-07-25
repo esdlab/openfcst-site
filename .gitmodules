@@ -1,0 +1,3 @@
+[submodule "themes/lab-theme"]
+	path = themes/lab-theme
+	url = https://github.com/jadc/lab-theme.git

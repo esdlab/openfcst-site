@@ -1,0 +1,56 @@
+theme = "lab-theme"
+title = "OpenFCST"
+baseURL = "https://example.org/"
+languageCode = "en-us"
+disableKinds = ["taxonomy", "term"]
+
+[params]
+    customCSS = ["overrides.css"]
+    customJS = [""]
+
+# Navigation Bar Links
+[[menus.nav]]
+name = "Home"
+pageRef = "/"
+weight = 1
+
+[[menus.nav]]
+name = "About"
+pageRef = "/about"
+weight = 2
+
+[[menus.nav]]
+name = "Downloads"
+pageRef = "/downloads"
+weight = 3
+
+[[menus.nav]]
+name = "Documentation"
+pageRef = "/docs"
+weight = 4
+
+# Footer Links
+[[menus.footer]]
+name = "ESDLab"
+pageRef = "https://ualberta.ca"
+weight = 1
+
+[[menus.footer]]
+name = "Salome"
+pageRef = "http://salome-platform.org"
+weight = 2
+
+[[menus.footer]]
+name = "deal.II"
+pageRef = "http://dealii.org"
+weight = 3
+
+[[menus.footer]]
+name = "Paraview"
+pageRef = "http://paraview.org"
+weight = 4
+
+[[menus.footer]]
+name = "Dakota"
+pageRef = "http://dakota.sandia.gov/software.html"
+weight = 5

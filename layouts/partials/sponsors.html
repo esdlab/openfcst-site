@@ -1,0 +1,8 @@
+<div class="sponsors">
+    {{ range (where .Site.RegularPages "Section" "sponsors") }}
+        <a href="{{ .Params.link }}">
+            {{ $image := .Resources.ByType "image" }}
+            <img src="{{ (index $image 0).RelPermalink }}" alt="{{ .Title }}" />
+        </a>
+    {{ end }}
+</div>
