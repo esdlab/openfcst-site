@@ -1,6 +1,6 @@
 theme = "lab-theme"
 title = "OpenFCST"
-baseURL = "https://example.org/"
+baseURL = "https://openfcst.org/"
 languageCode = "en-us"
 disableKinds = ["taxonomy", "term"]
 
