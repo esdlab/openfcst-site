@@ -1,0 +1,220 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>3. Introduction to AppAnode &mdash; Tutorial v0.3 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'v0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Tutorial v0.3 documentation" href="../index.html" />
+    <link rel="next" title="4. Introduction to AppOhmic" href="../ohmic/readme.html" />
+    <link rel="prev" title="2.6.2. Example: Optimization of an agglomerate cathode electrode" href="../cathode/Secanell_EA07_MultiVariable_Optimization_PEMFC_Cathodes_Agglomerate_Model/readme.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../ohmic/readme.html" title="4. Introduction to AppOhmic"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../cathode/Secanell_EA07_MultiVariable_Optimization_PEMFC_Cathodes_Agglomerate_Model/readme.html" title="2.6.2. Example: Optimization of an agglomerate cathode electrode"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Tutorial v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="introduction-to-appanode">
+<h1>3. Introduction to AppAnode<a class="headerlink" href="#introduction-to-appanode" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>3.1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>AppAnode is used to study mass and charge transport in an anode electrode. Different catalyst layer models can be evaluated including:</p>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li>macro-homogeneous catalyst layer model</li>
+<li>agglomerate catalyst layer model.</li>
+</ol>
+</div></blockquote>
+<p>NOTE: This example uses AppCathode application with different parameters to simulate an anode, therefore much of the equations and process to setup a simulation is the same.</p>
+</div>
+<div class="section" id="governing-equations">
+<h2>3.2. Governing equations<a class="headerlink" href="#governing-equations" title="Permalink to this headline">¶</a></h2>
+<p>The governing equations are</p>
+<div class="math">
+<p><img src="../_images/math/696374e7cff856023410ac3504cedcedb0843160.png" alt="R_1(\vec{u}) = \nabla \cdot (c_{total}D^{eff}_{H_2} \nabla x_{H_2} ) = \frac{1}{nF}\nabla\cdot i"/></p>
+</div><div class="math">
+<p><img src="../_images/math/260961fbc456129c607b9ee3fe095e5ad46faf0f.png" alt="R_2(\vec{u}) = \nabla \cdot (\sigma^{eff}_{m}\nabla\phi_m) = \nabla \cdot i"/></p>
+</div><div class="math">
+<p><img src="../_images/math/3c37bda95435ac2087a9bb6ab93cdb394b7b9608.png" alt="R_3(\vec{u}) = \nabla \cdot (\sigma^{eff}_{s}\nabla\phi_s) = -\nabla \cdot i"/></p>
+</div><p>where, <img class="math" src="../_images/math/4362183f3adb9ba1ce97f25a0b7e8bcce1c7cbea.png" alt="\nabla \cdot i"/> is the volumetric current density given by the selected model (usually Dual-path hydrogen oxidation reaction model).</p>
+<p>For more information on the governing equations, discretization and solution methodology please read <a class="reference internal" href="#secanell08">Secanell08</a> and <a class="reference internal" href="#secanell12">Secanell12</a>.</p>
+</div>
+<div class="section" id="anode-example-directory-structure">
+<h2>3.3. Anode Example Directory structure<a class="headerlink" href="#anode-example-directory-structure" title="Permalink to this headline">¶</a></h2>
+<p>The anode directory consists of the following folders:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><em>template</em> : This folder contains the default files for running all the examples in the other folders. Please <strong>do not</strong> modify this file as it will result in all tests failing. If you would like to create your own example either include this file to your simulation using the <em>include</em> command or copy the file to a different location.</li>
+<li><em>analysis</em>: This folder contains the <cite>main.prm</cite> and &#8216;data.prm` files needed to run a single analysis. It is a good starting point to learn how to use OpenFCST.</li>
+<li><em>polarization_curve</em> : This folder contains the <cite>main_test.prm</cite> and <cite>data_test.prm</cite> files needed to run a simulation to obtain a polarization curve. Note the data file includes the template find and adds the necessary modifications. The script to run a test to make sure the polarization curve is running correctly is in the folder <em>regression</em> together with the default data the test is compared to.</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="setting-up-a-anode-simulation">
+<h2>3.4. Setting up a anode simulation<a class="headerlink" href="#setting-up-a-anode-simulation" title="Permalink to this headline">¶</a></h2>
+<p>In order to run OpenFCST, two files are needed that provide the necessary information for OpenFCST to execute:</p>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li>A main file: This file is used to select the appropriate: a) type of analysis, i.e. analysis, parametric study, polarization curve and optimization study; application; b) the nonlinear solver; c) data file name; and, d) several less critical parameters.</li>
+<li>A data file: This file is used to input all the input data used for the simulation for the application selected.</li>
+</ol>
+</div></blockquote>
+<p>Both these files can either be loaded and modified via the openFCST graphical user interface (GUI) or modified as a text file.</p>
+<div class="section" id="setting-up-a-simulation-using-the-openfcst-graphical-user-interface-gui">
+<h3>3.4.1. Setting up a simulation using the OpenFCST graphical user interface (GUI)<a class="headerlink" href="#setting-up-a-simulation-using-the-openfcst-graphical-user-interface-gui" title="Permalink to this headline">¶</a></h3>
+<p>If you are using the OpenFCST GUI, you will need to load the .xml files. You can generate an .xml file from a .prm file by first loading the OpenFCST environmental variables by typing in the Install folder:
+.. code:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ . fcst_env.sh
+</pre></div>
+</div>
+<p>Then, enter the folder that contains the main.prm and data.prm files, in this case Install/examples/anode/analysis and call openFCST as follows:</p>
+<div class="code highlight-python"><div class="highlight"><pre>$ fcst2D -c main.prm
+</pre></div>
+</div>
+<p>openFCST will directly parse the main.prm and the associated data and optimization files (if specified in the main.prm file).</p>
+<p>If you would like to use the GUI, first launch the GUI by typing:</p>
+<div class="code highlight-python"><div class="highlight"><pre>$ fcst_gui
+</pre></div>
+</div>
+<p>Then, select the OpenFCST executable file that you would like the GUI to run, mainly openFCST-2d (or fuel_cell-2d.bin) or openFCST-3d (or fuel_cell-3d.bin) from the /Install/bin folder.</p>
+<p>At this point, you can load your main.xml and data.xml files. Go to <code class="docutils literal"><span class="pre">File&gt;</span> <span class="pre">Open</span> <span class="pre">Project...</span></code> and select the <code class="docutils literal"><span class="pre">main.xml</span></code> and <code class="docutils literal"><span class="pre">data.xml</span></code> files. If you are planning on running an
+optimization simulation, then also load the <code class="docutils literal"><span class="pre">opt.xml</span></code> file, otherwise select <strong>No</strong> to loading a new simulation.</p>
+<p>Once <code class="docutils literal"><span class="pre">main.xml</span></code> and <code class="docutils literal"><span class="pre">data.xml</span></code> files are loaded, the GUI will show several folders in the <code class="docutils literal"><span class="pre">main.xml</span></code> and <code class="docutils literal"><span class="pre">data.xml</span></code> tabs. Each folder contains options that you can modify.
+You can open each folder by clicking on them in order to see the variables that can be modified in each subsection. If you hover over each variable with your mouse,
+a text window will appear explaining the use of each input parameter.</p>
+<div class="section" id="the-main-xml-file">
+<h4>3.4.1.1. The <code class="docutils literal"><span class="pre">main.xml</span></code> file<a class="headerlink" href="#the-main-xml-file" title="Permalink to this headline">¶</a></h4>
+<p>See cathode tutorial.</p>
+</div>
+<div class="section" id="the-data-xml-file">
+<h4>3.4.1.2. The <code class="docutils literal"><span class="pre">data.xml</span></code> file<a class="headerlink" href="#the-data-xml-file" title="Permalink to this headline">¶</a></h4>
+<p>See cathode tutorial.</p>
+</div>
+</div>
+</div>
+<div class="section" id="post-processing-results">
+<h2>3.5. Post-processing results<a class="headerlink" href="#post-processing-results" title="Permalink to this headline">¶</a></h2>
+<p>After running a simulation several files are produced. File logfile.log contains all the information that is output to screen. File <em>polarization_curve.dat</em> contains the voltage and current density data. If you have run a polarization curve, e.g., by running the example in folder <em>polarization_curve</em>, a collection of files with names *
+fuel_cell_solution_DataFile_0000X_Cycle_1.vtu* is generated. These are ParaView readable files that can be used to visualize the solution. In the name X refers to the point in the polarization curve.</p>
+<p>In order to visualize the results, open the file on ParaView and select the apprpriate field variable you would like to visualize. For more infomation about using ParaView visit the project website at: www.paraview.org/</p>
+</div>
+<div class="section" id="references">
+<h2>3.6. References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<p id="secanell08">M Secanell, K Karan, A Suleman, N Djilali, Optimal design of ultralow-platinum PEMFC anode electrodes, Journal of the Electrochemical Society 155 (2), B125-B134, 2008.</p>
+<p id="secanell12">P Dobson, C Lei, T Navessin, M Secanell, Characterization of the PEM fuel cell catalyst layer microstructure by nonlinear least-squares parameter estimation, Journal of the Electrochemical Society 159 (5), B514-B523, 2012</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">3. Introduction to AppAnode</a><ul>
+<li><a class="reference internal" href="#introduction">3.1. Introduction</a></li>
+<li><a class="reference internal" href="#governing-equations">3.2. Governing equations</a></li>
+<li><a class="reference internal" href="#anode-example-directory-structure">3.3. Anode Example Directory structure</a></li>
+<li><a class="reference internal" href="#setting-up-a-anode-simulation">3.4. Setting up a anode simulation</a><ul>
+<li><a class="reference internal" href="#setting-up-a-simulation-using-the-openfcst-graphical-user-interface-gui">3.4.1. Setting up a simulation using the OpenFCST graphical user interface (GUI)</a><ul>
+<li><a class="reference internal" href="#the-main-xml-file">3.4.1.1. The <code class="docutils literal"><span class="pre">main.xml</span></code> file</a></li>
+<li><a class="reference internal" href="#the-data-xml-file">3.4.1.2. The <code class="docutils literal"><span class="pre">data.xml</span></code> file</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#post-processing-results">3.5. Post-processing results</a></li>
+<li><a class="reference internal" href="#references">3.6. References</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../cathode/Secanell_EA07_MultiVariable_Optimization_PEMFC_Cathodes_Agglomerate_Model/readme.html"
+                        title="previous chapter">2.6.2. Example: Optimization of an agglomerate cathode electrode</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../ohmic/readme.html"
+                        title="next chapter">4. Introduction to AppOhmic</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/anode/readme.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../ohmic/readme.html" title="4. Introduction to AppOhmic"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../cathode/Secanell_EA07_MultiVariable_Optimization_PEMFC_Cathodes_Agglomerate_Model/readme.html" title="2.6.2. Example: Optimization of an agglomerate cathode electrode"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Tutorial v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright Energy Systems Design Laboratory, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>8. Introduction to AppPemfcTPSaturation &mdash; Tutorial v0.3 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'v0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Tutorial v0.3 documentation" href="../index.html" />
+    <link rel="next" title="9. How to create your own tutorial" href="../how_to/how_to.html" />
+    <link rel="prev" title="7. Introduction to Microscale Simulations" href="../microscale/readme.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../how_to/how_to.html" title="9. How to create your own tutorial"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../microscale/readme.html" title="7. Introduction to Microscale Simulations"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Tutorial v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="introduction-to-apppemfctpsaturation">
+<h1>8. Introduction to AppPemfcTPSaturation<a class="headerlink" href="#introduction-to-apppemfctpsaturation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>8.1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>AppPemfcTPSaturation implements a steady-state, non-isothermal, two-phase flow model based on a saturation equation.
+This class is used to solve the physical pheonoma on a complete membrane electrode assembly.
+The anode hydrogen oxydation reaction is modelled using an aglomerate model with dual-pathway kinetics and the cathode oxygen reduction
+reaction using an agglomerate model and the kinetics in Sun et al., EA, 2006. The membrane is modelled using a modified Springer model.</p>
+</div>
+<div class="section" id="governing-equations">
+<h2>8.2. Governing equations<a class="headerlink" href="#governing-equations" title="Permalink to this headline">¶</a></h2>
+<p>The model is based on the following assumptions:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>The fuel cell is at steady state and operates at constant pressure (pressure gradients are negligible).</li>
+<li>The gas mixtures are assumed to have ideal gas behaviour.</li>
+<li>The cathode is fed with humidified air.</li>
+<li>The anode is fed with humidified hydrogen.</li>
+<li>The gas diffusion layers are composed of a porous fibrous matrix.</li>
+<li>The catalyst layer is composed of three phases, viz, platinum supported on carbon, membrane electrolyte ionomer and open (void) space.</li>
+<li>In the case of an agglomerate catalyst layer model being considered, the electrochemical reaction occurs inside the agglomerates.</li>
+<li>The transport of reactants from the gas channels to the catalyst layer occurs only by diffusion of reactant gas to the agglomerate surface and then by dissolution and diffusion through the ionomer to the reaction site.</li>
+<li>The transport of water inside the electrolyte in the membrane and CL is modeled using Springer&#8217;s model including thermal osmosis effects.</li>
+<li>The membrane and gas phase in the CL are assumed to be in equilibrium throughout the CL, therefore they are related by means of the sorption isotherm.</li>
+<li>The transport of protons takes place only through the electrolyte, i.e. the Nafion and it is governed by Ohm&#8217;s law.</li>
+<li>The transport of electrons takes place only through the solid phase, i.e. the carbon fibers in the GDL and the mixture of carbon supported platinum in the catalyst layer, and is governed by Ohm&#8217;s law.</li>
+<li>Very long Brinkmann number flow is assumed, lead to negligible viscous dissipation, and hence neglected in the model.</li>
+<li>Gas and solid phases are in thermal equilibrium. This assumption is fairly valid since there is very high interstitial surface area, and convective heat transfer between these two phases would be sufficiently large such that temperature of all the phases at a particular location in the fuel cell will be approximately equal.</li>
+<li>Convection effects (including enthalpy transport by convection) are negligible for the fuel cell conditions discussed here.</li>
+</ol>
+</div></blockquote>
+<p>The governing equations are</p>
+<div class="math">
+<p><img src="../_images/math/bd24231162e7c49cdade22665d5e8b455f73fb5a.png" alt="R_1(\vec{u}) = - \vec{\nabla} \cdot \left( \dfrac{p_T}{RT} ~D^{eff}_{O_2,N_2} \vec{\nabla} x_{O_2} \right)  - S_{O_2}  =  0"/></p>
+</div><div class="math">
+<p><img src="../_images/math/adc70e00eebfe98ab707fc266d150a6848611c79.png" alt="R_2(\vec{u}) = - \vec{\nabla} \cdot \left( \dfrac{p_T}{RT} ~D^{eff}_{H_2O,N_2 ~\text{or} ~H_2}\vec{\nabla} x_{H_2O} \right) - S_{H_2O} = 0"/></p>
+</div><div class="math">
+<p><img src="../_images/math/6a53eeb2f3cfa0974d2d1875580c827e81107fcc.png" alt="R_3(\vec{u}) = - \vec{\nabla} \cdot \left( \sigma^{eff}_{m} \vec{\nabla} \phi_m \right) - S_{H^+} = 0"/></p>
+</div><div class="math">
+<p><img src="../_images/math/73ae98050e522d52ff0e50d13085894c79c44104.png" alt="R_4(\vec{u}) = \vec{\nabla} \cdot  \left( \sigma^{eff}_{s} \vec{\nabla} \phi_s \right) - S_{e^-} = 0"/></p>
+</div><div class="math">
+<p><img src="../_images/math/717f03f77ef8a111913528521465116c73c6c2f8.png" alt="R_5(\vec{u}) = - \vec{\nabla} \cdot \left( n_d \dfrac{\sigma_m^{eff}}{F} \vec{\nabla} \phi_m +\dfrac{\rho_{dry}}{EW} D^{eff}_{\lambda} \vec{\nabla} \lambda +\dfrac{D^{eff}_T}{M_{H_2O}} \vec{\nabla} T \right) - S_{\lambda}  =  0"/></p>
+</div><div class="math">
+<p><img src="../_images/math/b18ad3c08581a3fe375333cb3556132e95d33631.png" alt="R_6(\vec{u}) = - \vec{\nabla} \cdot \left( k^{eff} \vec{\nabla} T \right) + \sum_{\text{gases}, \lambda} \left( \vec{N}_i \cdot \vec{\nabla}\bar{H}_i \right) - S_T  =  0
+
+R_7(\vec{u}) = - \vec{\nabla} \cdot \left( \dfrac {\rho_l k_{rl}} {\mu_l} \vec{\nabla} s \right) - S_L  =  0"/></p>
+</div><p>where the unknowns are, the oxygen mole fraction, <img class="math" src="../_images/math/3c7b35b88a4543f663dd747b0c71f8a61374475c.png" alt="x_{O_2}"/>; the water mole fraction, <img class="math" src="../_images/math/1590a31d0abd3761ddc52879e3e9e1a7e7c3afd0.png" alt="x_{H_2O}"/>; the electrolyte (membrane) and electronic potentials, <img class="math" src="../_images/math/16e8b2eb407a05e54ac13f7f4f22f03b96462747.png" alt="\phi_m"/> and <img class="math" src="../_images/math/5893e446b3ce5efce982bf56cb7d3489b208aed4.png" alt="\phi_s"/> respectively; the membrane water content, <img class="math" src="../_images/math/1ab0134b6e0837594649c75a2ed83cfd85a2d03d.png" alt="\lambda"/>; and, the temperature, <img class="math" src="../_images/math/6d42c88506b8da39a2a23653aecbfb7c29728063.png" alt="T"/>. The effective transport parameters <img class="math" src="../_images/math/4286aacdb938fd3a42af78dca7e827c65ea038f5.png" alt="D^{eff}_{O_2}"/>, <img class="math" src="../_images/math/0bab60af960f0832791e45c906bf772521f74921.png" alt="D^{eff}_{H_2O}"/>, <img class="math" src="../_images/math/c60c34a8d6d66b743d318e494b9d0264c04c0a71.png" alt="\sigma^{eff}_{m}"/>, <img class="math" src="../_images/math/68b57b802e6e06b9b637bda754963f14ba380414.png" alt="\sigma^{eff}_{s}"/>, <img class="math" src="../_images/math/9c3df9e47cab919077f75c68dde428b1c67564e1.png" alt="D^{eff}_{\lambda}"/>,  <img class="math" src="../_images/math/21cb2343622f0af70d21e6473dafcec9e4c174cc.png" alt="D^{eff}_T"/>, and <img class="math" src="../_images/math/b9bbfe092e423b4e103f19b6770cfd3ed417b114.png" alt="k^{eff}"/>,  are different in the membrane, GDL and CL and depend non-linearly on the design variables. Due to the solution methodology, all equations need to be solved in all the domains, i.e. GDL, CL and membrane. However, some equations are not necessary in some of the cell domains. This is addressed by making the unnecessary transport parameters zero.</p>
+<p>The source terms in the system of equations are given by</p>
+<div class="math">
+<p><img src="../_images/math/14e4cae949351c127c7273ff0ee95ee3778f0c75.png" alt="S_{O_2} = \left\{
+\begin{array}{cl}
+\frac{-\nabla \cdot \vec{i}}{4F} \quad &amp;\text{in CCL} \\
+0 \quad &amp;\text{otherwise}
+\end{array}
+\right."/></p>
+</div><div class="math">
+<p><img src="../_images/math/ea493acf79a2dd650100293424a1f6fcef9c8a87.png" alt="S_{H_2O} = \left\{
+\begin{array}{cl}
+\frac{\nabla \cdot \vec{i}}{2F} - k_t \frac{\rho_{dry}}{EW}(\lambda_{eq}-\lambda) \quad &amp; \text{in CCL} \\
+- k_t \frac{\rho_{dry}}{EW}(\lambda_{eq}-\lambda) \quad &amp; \text{in ACL} \\
+0 \quad &amp; \text{otherwise}
+\end{array}
+\right."/></p>
+</div><div class="math">
+<p><img src="../_images/math/3699dd84f3340e12086c27722effece02a5d766d.png" alt="S_{H^+} = \left\{
+\begin{array}{cl}
+-\nabla \cdot \vec{i} \quad &amp; \text{in CCL} \\
+\nabla \cdot \vec{i} \quad &amp; \text{in ACL} \\
+0 \quad &amp; \text{otherwise}
+\end{array}
+\right."/></p>
+</div><div class="math">
+<p><img src="../_images/math/d7ea7c1eaf08e5a772db03b93938220469899ab5.png" alt="S_{e^-} = \left\{
+\begin{array}{cl}
+0 &amp;\text{in GDL and membrane} \\
+-\nabla \cdot \vec{i} \quad &amp; \text{in CCL} \\
+\nabla \cdot \vec{i} \quad &amp; \text{in ACL} \\
+0 \quad &amp; \text{otherwise}
+\end{array}
+\right."/></p>
+</div><div class="math">
+<p><img src="../_images/math/354311856b4d8b603b63d1c0f854eaf4a491f5cf.png" alt="S_{\lambda} = \left\{
+\begin{array}{cl}
+k_t \frac{\rho_{dry}}{EW}(\lambda_{eq}-\lambda) \quad &amp; \text{in CLs} \\
+0 \quad &amp; \text{otherwise}
+\end{array}
+\right."/></p>
+</div><div class="math">
+<p><img src="../_images/math/04f59f2392a1172c585c35e7cbeb446156d02e28.png" alt="S_{T} = \left\{
+\begin{array}{cl}
+\sigma^{eff}_s ( \vec{\nabla} \phi_s \cdot \vec{\nabla} \phi_s ) \quad &amp; \text{in GDL and MPL} \\~\\
+\sigma^{eff}_m ( \vec{\nabla} \phi_m \cdot \vec{\nabla} \phi_m ) \quad &amp; \text{in Membrane} \\~\\
+-(\nabla \cdot \vec{i}) \eta + \frac{\nabla \cdot \vec{i}}{2F} ( -T f_{ORR} \Delta \bar{S}_{overall} - \bar{H}_{lv} ) + \sigma^{eff}_m ( \vec{\nabla} \phi_m \cdot \vec{\nabla} \phi_m ) \\ \qquad + \sigma^{eff}_s ( \vec{\nabla} \phi_s \cdot \vec{\nabla} \phi_s )  +k_t \frac{\rho_{dry}}{EW} ( \lambda_{eq} - \lambda ) \bar{H}_{sorption} \quad &amp; \text{in CCL} \\~\\
+(\nabla \cdot \vec{i}) \eta + \frac{\nabla \cdot \vec{i}}{2F} ( -T (1-f_{ORR}) \Delta \bar{S}_{overall} ) + \sigma^{eff}_m ( \vec{\nabla} \phi_m \cdot \vec{\nabla} \phi_m ) \\ \qquad + \sigma^{eff}_s ( \vec{\nabla} \phi_s \cdot \vec{\nabla} \phi_s )  +k_t\frac{\rho_{dry}}{EW} ( \lambda_{eq} - \lambda ) \bar{H}_{sorption} \quad &amp; \text{in ACL}
+\end{array}
+\right."/></p>
+</div><p>and</p>
+<div class="math">
+<p><img src="../_images/math/aa0c2f7b11470126a29c12c1d735d67a3b11ac62.png" alt="S_{\L} = \left\{
+\begin{array}{cl}
+k_{e/c} a_{lv} H_{lv}  \left( \dfrac {p_v - p_{sat}(s,T)} {p_{sat}(s,T)}\right) \\
+0 \quad &amp; \text{PEM}
+\end{array}
+\right."/></p>
+</div><p>where <img class="math" src="../_images/math/4b98d1f641b9ba32184e63ff26d596dc4c1fd128.png" alt="\lambda_{eq}"/> is given by the sorption isotherm reported by Hinatsu et al. at the corresponding water vapour activity value in the specific location in the CL.</p>
+</div>
+<div class="section" id="directory-structure">
+<h2>8.3. Directory structure<a class="headerlink" href="#directory-structure" title="Permalink to this headline">¶</a></h2>
+<p>The AppPemfcTPSaturation directory consists of the following folders:</p>
+<p>1. template : This folder contains the default files for running all the examples in the other folders. Please <strong>do not</strong> modify this file as
+it will result in all tests failing. If you would like to create your own example either include this file to your simulation using the <em>include</em>
+command or copy the file to a different location.</p>
+<p>2. Polarization_curve : This folder contains the two polarization curve studies: dry case and wet case. Both of them contain <code class="code docutils literal"><span class="pre">main_test.prm</span></code> and <code class="code docutils literal"><span class="pre">data_test.prm</span></code> files needed to run a simulation.
+Note the data file includes the template find and adds the necessary modifications.</p>
+<p>3. Jie_EA2016_article_data : This folder contains the files to reproduce the studies that will be published in JES paper, still await for the review.
+Note the data file includes the template find and adds the necessary modifications.</p>
+</div>
+<div class="section" id="setting-up-a-apppemfctpsaturation-simulation">
+<h2>8.4. Setting up a AppPemfcTPSaturation simulation<a class="headerlink" href="#setting-up-a-apppemfctpsaturation-simulation" title="Permalink to this headline">¶</a></h2>
+<p>In order to run OpenFCST, two files are needed that provide the necessary information for OpenFCST to execute:</p>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li>A main file: This file is used to select the appropriate: a) type of analysis, i.e. analysis, parametric study, polarization curve and optimization study; application; b) the nonlinear solver; c) data file name; and, d) several less critical parameters.</li>
+<li>A data file: This file is used to input all the input data used for the simulation for the application selected.</li>
+</ol>
+</div></blockquote>
+<p>Both these files can either be loaded and modified via the openFCST graphical user interface (GUI) or modified as a text file.</p>
+</div>
+<div class="section" id="obtaining-a-polarization-curve">
+<h2>8.5. Obtaining a polarization curve<a class="headerlink" href="#obtaining-a-polarization-curve" title="Permalink to this headline">¶</a></h2>
+<p>Once the <cite>main.xml</cite> or <cite>.prm</cite> file has been modified, run the simulation.</p>
+</div>
+<div class="section" id="references">
+<h2>8.6. References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<ol class="upperalpha simple" id="secanell07a" start="13">
+<li>Secanell, B. Carnes, A. Suleman and N. Djilali, &#8220;Numerical Optimization of Proton Exchange Membrane Fuel Cell Cathode Electrodes&#8221;, Electrochimica Acta, 52(7):2668-2682, 2007.</li>
+</ol>
+<ol class="upperalpha simple" id="secanell07b" start="13">
+<li>Secanell, K. Karan, A. Suleman and N. Djilali, &#8220;Multi-Variable Optimization of PEMFC Cathodes using an Agglomerate Model&#8221;, Electrochimica Acta, 52(22):6318-6337, 2007.</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">8. Introduction to AppPemfcTPSaturation</a><ul>
+<li><a class="reference internal" href="#introduction">8.1. Introduction</a></li>
+<li><a class="reference internal" href="#governing-equations">8.2. Governing equations</a></li>
+<li><a class="reference internal" href="#directory-structure">8.3. Directory structure</a></li>
+<li><a class="reference internal" href="#setting-up-a-apppemfctpsaturation-simulation">8.4. Setting up a AppPemfcTPSaturation simulation</a></li>
+<li><a class="reference internal" href="#obtaining-a-polarization-curve">8.5. Obtaining a polarization curve</a></li>
+<li><a class="reference internal" href="#references">8.6. References</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../microscale/readme.html"
+                        title="previous chapter">7. Introduction to Microscale Simulations</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../how_to/how_to.html"
+                        title="next chapter">9. How to create your own tutorial</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/PemfcTPSaturation/readme.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../how_to/how_to.html" title="9. How to create your own tutorial"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../microscale/readme.html" title="7. Introduction to Microscale Simulations"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Tutorial v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright Energy Systems Design Laboratory, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

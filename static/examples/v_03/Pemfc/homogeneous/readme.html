@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5.4.1. Running a membrane electrode assembly model with a macro-homogeneous CL &mdash; Tutorial v0.3 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     'v0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Tutorial v0.3 documentation" href="../../index.html" />
+    <link rel="up" title="5. Introduction to AppPemfc" href="../readme.html" />
+    <link rel="next" title="5.4.2. Running a membrane electrode assembly model with an agglomerate CL" href="../agglomerate/readme.html" />
+    <link rel="prev" title="5. Introduction to AppPemfc" href="../readme.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../agglomerate/readme.html" title="5.4.2. Running a membrane electrode assembly model with an agglomerate CL"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../readme.html" title="5. Introduction to AppPemfc"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Tutorial v0.3 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../readme.html" accesskey="U">5. Introduction to AppPemfc</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="running-a-membrane-electrode-assembly-model-with-a-macro-homogeneous-cl">
+<h1>5.4.1. Running a membrane electrode assembly model with a macro-homogeneous CL<a class="headerlink" href="#running-a-membrane-electrode-assembly-model-with-a-macro-homogeneous-cl" title="Permalink to this headline">¶</a></h1>
+<p>An example <cite>main.prm</cite> file is given below:</p>
+<div class="highlight-python"><div class="highlight"><pre>######################################################################
+#
+#  Main file 
+#
+#  Copyright (C) 2011-14 by Energy Systems Design Laboratory, University of Alberta
+#
+######################################################################
+
+include ../template/main_app_pemfc_default.prm
+
+subsection Simulator
+  set simulator parameter file name = data.prm
+end
+</pre></div>
+</div>
+<p>An example <cite>data.prm</cite> file is:</p>
+<div class="highlight-python"><div class="highlight"><pre>######################################################################
+#
+#   Testing file. Loads defaul test file and uses it to the implementation
+#   of a homogeneous catalyst layer.
+#
+#   Copyright (C) 2015 by Marc Secanell, University of Alberta
+#
+######################################################################
+
+
+######################################################################
+
+include ../template/data_app_pemfc_default.prm
+
+######################################################################
+######################################################################
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../readme.html"
+                        title="previous chapter">5. Introduction to AppPemfc</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../agglomerate/readme.html"
+                        title="next chapter">5.4.2. Running a membrane electrode assembly model with an agglomerate CL</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/Pemfc/homogeneous/readme.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../agglomerate/readme.html" title="5.4.2. Running a membrane electrode assembly model with an agglomerate CL"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../readme.html" title="5. Introduction to AppPemfc"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Tutorial v0.3 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../readme.html" >5. Introduction to AppPemfc</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright Energy Systems Design Laboratory, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1017 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>2.6.2. Example: Optimization of an agglomerate cathode electrode &mdash; Tutorial v0.2 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     'v0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Tutorial v0.2 documentation" href="../../index.html" />
+    <link rel="up" title="2. Introduction to AppCathode" href="../readme.html" />
+    <link rel="next" title="3. Introduction to AppOhmic" href="../../ohmic/readme.html" />
+    <link rel="prev" title="2.6.1. Example: Optimization of a macro-homogeneous cathode electrode (Ref: Secanell, Electrochimica Acta, 2007)" href="../Secanell_EA07_Numerical_Optimization_PEMFC_Cathode_Electrodes/readme.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../ohmic/readme.html" title="3. Introduction to AppOhmic"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../Secanell_EA07_Numerical_Optimization_PEMFC_Cathode_Electrodes/readme.html" title="2.6.1. Example: Optimization of a macro-homogeneous cathode electrode (Ref: Secanell, Electrochimica Acta, 2007)"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">Tutorial v0.2 documentation</a> &raquo;</li>
+          <li><a href="../readme.html" accesskey="U">2. Introduction to AppCathode</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="example-optimization-of-an-agglomerate-cathode-electrode">
+<h1>2.6.2. Example: Optimization of an agglomerate cathode electrode<a class="headerlink" href="#example-optimization-of-an-agglomerate-cathode-electrode" title="Permalink to this headline">¶</a></h1>
+<p>This folder contains the files used in order to reproduce the results reported in reference <a href="#id2"><span class="problematic" id="id3">Secanell07b_</span></a>.</p>
+<p>The data is subdivided as follows:</p>
+<ol class="arabic simple">
+<li>Directory <tt class="docutils literal"><span class="pre">template/</span></tt> contains the main main.prm, data.prm and opt.prm file used in the simulations. In each of the sub-folders these files are extended</li>
+<li>Directory <tt class="docutils literal"><span class="pre">analysis/</span></tt> contains the data to run a single point in the polarization curve. It uses the data in <tt class="docutils literal"><span class="pre">template/</span></tt> directly without modifications.</li>
+<li>Directory <tt class="docutils literal"><span class="pre">parameteric/</span></tt> contains the data files used to compute a full polarization curve. To achieve this goal, only the main.prm is modified with respect to the template files by including information about the number of points needed in the polarization curve. The directory also includes an .ods file used to compare the data. The results, as of Feb. 2, 2014, OpenFCST Rev: 1817 match the article.</li>
+<li>Directory <tt class="docutils literal"><span class="pre">optimization/</span></tt> contains the main, data and optimization files necessary to run the optimization studies in section 4 of reference <a href="#id4"><span class="problematic" id="id5">Secanell07b_</span></a>.</li>
+</ol>
+<p><strong>Warning:</strong> This directory is not tested with regression tests, therefore it is possible that the parameter file has to be modified slightly in order to obtain the correct solution. The folder was last validated on Feb. 3, 2015
+prior to openFCST release 0.2.</p>
+<div class="section" id="polarization-curve">
+<h2>2.6.2.1. Polarization curve<a class="headerlink" href="#polarization-curve" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="the-main-xml-file">
+<h3>2.6.2.1.1. The <tt class="docutils literal"><span class="pre">main.xml</span></tt> file<a class="headerlink" href="#the-main-xml-file" title="Permalink to this headline">¶</a></h3>
+<p>In order to perform a polarization curve, the same data file as for analysis case is used. The only difference in the <em>main.xml</em> file is specifying the polarization curve parameters, e.g.</p>
+<p>Example:</p>
+<div class="highlight-python"><pre>######################################################################
+#   $Id: sample_main_param_file.prm  2011-02-09 secanell $
+#
+#  This file is used to simulate an cathode and to obtain
+#  a single point on a polarisation curve. Use this file 
+#  if you wish to perform a single analysis simulation. 
+#
+#
+#   Copyright (C) 2011 by Marc Secanell
+#
+######################################################################
+
+include ../template/main.prm
+
+######################################################################
+#
+# The following parameters are modified in order to obtain a polarization
+# curve with respect to the template file
+#
+######################################################################
+subsection Simulator
+
+  set Analysis type = PolarizationCurve
+  
+  ################################################
+  subsection Polarization Curve
+    set Initial voltage [V] = 0.94
+    set Final voltage [V] = 0.19
+    set Increment [V] = 0.074
+    set Min. Increment [V] = 0.01
+  end  
+  ################################################
+  
+end
+######################################################################</pre>
+</div>
+</div>
+<div class="section" id="results">
+<h3>2.6.2.1.2. Results<a class="headerlink" href="#results" title="Permalink to this headline">¶</a></h3>
+<p>Below is the polarization curve obtained from running the template file:</p>
+<div class="highlight-text"><div class="highlight"><pre>$ fuel_cell-2d.bin main.prm
+Parameters: main.prm
+//=======================================================//
+                                                          
+    WELCOME TO THE FUEL CELL SIMULATION TOOLBOX           
+                                                       
+//=======================================================//
+                                                       
+ Current Developers:                                   
+  Marc Secanell (a), Valentin N. Zingan(a),            
+  Andreas Putz (b), Madhur Bhaiya (a),                 
+  Philip Wardlaw (a), Chad Balen(a), Mayank Sabharwal (a)  
+  Jie Zhou (a) and Aslan Kosakian (a).                 
+                                                       
+  a) Energy Systems Design Lab, University of Alberta  
+  b) Automotive Fuel Cell Cooperation (AFCC) Corp.     
+                                                       
+ Past Developers:                                      
+  Michael Moore, Peter Dobson, and Kailyn Domican.     
+                                                       
+                                                       
+ (c) Copyright 2007-2015 by Energy Systems Design      
+     Laboratory, University of Alberta                 
+                                                       
+ This software is distributed under the MIT License.    
+ For more information, see the README file in /doc/LICENSE
+                                                        
+=======================================================
+Running PolarizationCurve simulation
+=============================================================================
+== Polarization curve parameters: ==
+Initial voltage [V] : 0.94
+Final voltage [V] : 0.19
+Increment [V] : 0.074
+Adaptive Increment? 1
+Min. Increment [V] : 0.01
+==  ==
+=============================================================================
+=============================================================================
+Iteration : 0
+Solving for...
+Parameter name: 
+Cell param_value: 0.94
+======
+YOU ARE CURRENTLY SOLVING A CATHODE MODEL
+Application-&gt;DoF-&gt;BlockMatrix-&gt;OptimizationBlockMatrix
+-&gt;FuelCellShop::Equation::NewFicksTransportEquation
+-&gt;FuelCellShop::Equation::ElectronTransportEquation
+-&gt;FuelCellShop::Equation::ProtonTransportEquation
+-&gt;FuelCellShop::Equation::ReactionSourceTerms
+-&gt;FuelCell::Application::AppCathode-2D
+YOU ARE USING Newton3pp NEWTON SOLVER
+Application-&gt;Copy-&gt;Newton3ppBase-&gt;-&gt;AdaptiveRefinement
+Parameters: data.prm
+FESystem&lt;2&gt;[FE_Q&lt;2&gt;(2)^3]
+ 
+name: Cathode
+Generating new grid...
+Using FCST grid generator.
+Levels:3
+Cells:480
+Dofs:6027(2009,2009,2009) sorting by component
+name: DesignFibrousGDL
+name: SGL24BC
+ Created a SGL24BC MPL
+Tafel kinetics.
+Cycle = 0 : 
+Generating the initial guess
+Solving...
+Solving the linear system using UMFPACK
+Overall residual at iteration 1 = 0.000422815
+Residual for equation 0 is: 7.74681e-10
+Residual for equation 1 is: 0.00029897
+Residual for equation 2 is: 0.000298982
+Solving the linear system using UMFPACK
+Overall residual at iteration 2 = 1.15909e-06
+Residual for equation 0 is: 2.12364e-12
+Residual for equation 1 is: 8.19601e-07
+Residual for equation 2 is: 8.19602e-07
+Solving the linear system using UMFPACK
+Overall residual at iteration 3 = 1.01784e-11
+Residual for equation 0 is: 1.8614e-17
+Residual for equation 1 is: 7.18387e-12
+Residual for equation 2 is: 7.21059e-12
+Solution: 3: 2009 2009 2009
+Cycle = 1 : 
+Entering estimate...
+Exited estimate
+Levels:4
+Cells:915
+Dofs:11637(3879,3879,3879) sorting by component
+Exited remesh
+Solving...
+Solving the linear system using UMFPACK
+Overall residual at iteration 1 = 9.51821e-13
+Residual for equation 0 is: 2.45125e-19
+Residual for equation 1 is: 9.30931e-14
+Residual for equation 2 is: 9.47258e-13
+Solution: 3: 3879 3879 3879
+ sorting by component
+Response current is : -0.0844989
+Current density: 0.0844989 at cell param_value 0.94
+=============================================================================
+=============================================================================
+=============================================================================
+Iteration : 1
+Solving for...
+Parameter name: 
+Cell param_value: 0.866
+======
+YOU ARE CURRENTLY SOLVING A CATHODE MODEL
+Application-&gt;DoF-&gt;BlockMatrix-&gt;OptimizationBlockMatrix
+-&gt;FuelCellShop::Equation::NewFicksTransportEquation
+-&gt;FuelCellShop::Equation::ElectronTransportEquation
+-&gt;FuelCellShop::Equation::ProtonTransportEquation
+-&gt;FuelCellShop::Equation::ReactionSourceTerms
+-&gt;FuelCell::Application::AppCathode-2D
+YOU ARE USING Newton3pp NEWTON SOLVER
+Application-&gt;Copy-&gt;Newton3ppBase-&gt;-&gt;AdaptiveRefinement
+Parameters: data.prm
+FESystem&lt;2&gt;[FE_Q&lt;2&gt;(2)^3]
+ 
+name: Cathode
+Generating new grid...
+Using FCST grid generator.
+Levels:3
+Cells:480
+Dofs:6027(2009,2009,2009) sorting by component
+name: DesignFibrousGDL
+name: SGL24BC
+ Created a SGL24BC MPL
+Tafel kinetics.
+Cycle = 0 : 
+Correcting the initial guess
+Solving...
+Solving the linear system using UMFPACK
+Overall residual at iteration 1 = 0.000485971
+Residual for equation 0 is: 8.94222e-10
+Residual for equation 1 is: 0.000342143
+Residual for equation 2 is: 0.000345117
+Solving the linear system using UMFPACK
+Overall residual at iteration 2 = 1.66968e-06
+Residual for equation 0 is: 3.05912e-12
+Residual for equation 1 is: 1.18064e-06
+Residual for equation 2 is: 1.18064e-06
+Solving the linear system using UMFPACK
+Overall residual at iteration 3 = 2.50826e-11
+Residual for equation 0 is: 4.59361e-17
+Residual for equation 1 is: 1.77287e-11
+Residual for equation 2 is: 1.77434e-11
+Solution: 3: 2009 2009 2009
+Cycle = 1 : 
+Entering estimate...
+Exited estimate
+Levels:4
+Cells:915
+Dofs:11616(3872,3872,3872) sorting by component
+Exited remesh
+Solving...
+Solving the linear system using UMFPACK
+Overall residual at iteration 1 = 5.45428e-12
+Residual for equation 0 is: 9.84242e-18
+Residual for equation 1 is: 3.79268e-12
+Residual for equation 2 is: 3.9198e-12
+Solution: 3: 3872 3872 3872
+ sorting by component
+Response current is : -0.236935
+Current density: 0.236935 at cell param_value 0.866
+=============================================================================
+=============================================================================
+=============================================================================
+Iteration : 2
+Solving for...
+Parameter name: 
+Cell param_value: 0.792
+======
+YOU ARE CURRENTLY SOLVING A CATHODE MODEL
+Application-&gt;DoF-&gt;BlockMatrix-&gt;OptimizationBlockMatrix
+-&gt;FuelCellShop::Equation::NewFicksTransportEquation
+-&gt;FuelCellShop::Equation::ElectronTransportEquation
+-&gt;FuelCellShop::Equation::ProtonTransportEquation
+-&gt;FuelCellShop::Equation::ReactionSourceTerms
+-&gt;FuelCell::Application::AppCathode-2D
+YOU ARE USING Newton3pp NEWTON SOLVER
+Application-&gt;Copy-&gt;Newton3ppBase-&gt;-&gt;AdaptiveRefinement
+Parameters: data.prm
+FESystem&lt;2&gt;[FE_Q&lt;2&gt;(2)^3]
+ 
+name: Cathode
+Generating new grid...
+Using FCST grid generator.
+Levels:3
+Cells:480
+Dofs:6027(2009,2009,2009) sorting by component
+name: DesignFibrousGDL
+name: SGL24BC
+ Created a SGL24BC MPL
+Tafel kinetics.
+Cycle = 0 : 
+Correcting the initial guess
+Solving...
+Solving the linear system using UMFPACK
+Overall residual at iteration 1 = 0.000182679
+Residual for equation 0 is: 3.35153e-10
+Residual for equation 1 is: 0.000128997
+Residual for equation 2 is: 0.000129349
+Solving the linear system using UMFPACK
+Overall residual at iteration 2 = 1.18312e-07
+Residual for equation 0 is: 2.16768e-13
+Residual for equation 1 is: 8.36588e-08
+Residual for equation 2 is: 8.36599e-08
+Solving the linear system using UMFPACK
+Overall residual at iteration 3 = 6.67052e-13
+Residual for equation 0 is: 9.92798e-20
+Residual for equation 1 is: 3.79772e-14
+Residual for equation 2 is: 6.6597e-13
+Solution: 3: 2009 2009 2009
+Cycle = 1 : 
+Entering estimate...
+Exited estimate
+Levels:4
+Cells:915
+Dofs:11616(3872,3872,3872) sorting by component
+Exited remesh
+Solving...
+Solving the linear system using UMFPACK
+Overall residual at iteration 1 = 4.56051e-11
+Residual for equation 0 is: 8.35556e-17
+Residual for equation 1 is: 3.22389e-11
+Residual for equation 2 is: 3.22565e-11
+Solution: 3: 3872 3872 3872
+ sorting by component
+Response current is : -0.451976
+Current density: 0.451976 at cell param_value 0.792
+=============================================================================
+=============================================================================
+=============================================================================
+Iteration : 3
+Solving for...
+Parameter name: 
+Cell param_value: 0.718
+======
+YOU ARE CURRENTLY SOLVING A CATHODE MODEL
+Application-&gt;DoF-&gt;BlockMatrix-&gt;OptimizationBlockMatrix
+-&gt;FuelCellShop::Equation::NewFicksTransportEquation
+-&gt;FuelCellShop::Equation::ElectronTransportEquation
+-&gt;FuelCellShop::Equation::ProtonTransportEquation
+-&gt;FuelCellShop::Equation::ReactionSourceTerms
+-&gt;FuelCell::Application::AppCathode-2D
+YOU ARE USING Newton3pp NEWTON SOLVER
+Application-&gt;Copy-&gt;Newton3ppBase-&gt;-&gt;AdaptiveRefinement
+Parameters: data.prm
+FESystem&lt;2&gt;[FE_Q&lt;2&gt;(2)^3]
+ 
+name: Cathode
+Generating new grid...
+Using FCST grid generator.
+Levels:3
+Cells:480
+Dofs:6027(2009,2009,2009) sorting by component
+name: DesignFibrousGDL
+name: SGL24BC
+ Created a SGL24BC MPL
+Tafel kinetics.
+Cycle = 0 : 
+Correcting the initial guess
+Solving...
+Solving the linear system using UMFPACK
+Overall residual at iteration 1 = 0.000251548
+Residual for equation 0 is: 4.6442e-10
+Residual for equation 1 is: 0.000176493
+Residual for equation 2 is: 0.000179239
+Solving the linear system using UMFPACK
+Overall residual at iteration 2 = 1.65273e-07
+Residual for equation 0 is: 3.0281e-13
+Residual for equation 1 is: 1.16864e-07
+Residual for equation 2 is: 1.16867e-07
+Solving the linear system using UMFPACK
+Overall residual at iteration 3 = 6.04496e-13
+Residual for equation 0 is: 1.89968e-19
+Residual for equation 1 is: 7.31791e-14
+Residual for equation 2 is: 6.0005e-13
+Solution: 3: 2009 2009 2009
+Cycle = 1 : 
+Entering estimate...
+Exited estimate
+Levels:4
+Cells:915
+Dofs:11634(3878,3878,3878) sorting by component
+Exited remesh
+Solving...
+Solving the linear system using UMFPACK
+Overall residual at iteration 1 = 1.13356e-10
+Residual for equation 0 is: 2.07707e-16
+Residual for equation 1 is: 8.01543e-11
+Residual for equation 2 is: 8.01558e-11
+Solution: 3: 3878 3878 3878
+ sorting by component
+Response current is : -0.643129
+Current density: 0.643129 at cell param_value 0.718
+=============================================================================
+=============================================================================
+=============================================================================
+Iteration : 4
+Solving for...
+Parameter name: 
+Cell param_value: 0.644
+======
+YOU ARE CURRENTLY SOLVING A CATHODE MODEL
+Application-&gt;DoF-&gt;BlockMatrix-&gt;OptimizationBlockMatrix
+-&gt;FuelCellShop::Equation::NewFicksTransportEquation
+-&gt;FuelCellShop::Equation::ElectronTransportEquation
+-&gt;FuelCellShop::Equation::ProtonTransportEquation
+-&gt;FuelCellShop::Equation::ReactionSourceTerms
+-&gt;FuelCell::Application::AppCathode-2D
+YOU ARE USING Newton3pp NEWTON SOLVER
+Application-&gt;Copy-&gt;Newton3ppBase-&gt;-&gt;AdaptiveRefinement
+Parameters: data.prm
+FESystem&lt;2&gt;[FE_Q&lt;2&gt;(2)^3]
+ 
+name: Cathode
+Generating new grid...
+Using FCST grid generator.
+Levels:3
+Cells:480
+Dofs:6027(2009,2009,2009) sorting by component
+name: DesignFibrousGDL
+name: SGL24BC
+ Created a SGL24BC MPL
+Tafel kinetics.
+Cycle = 0 : 
+Correcting the initial guess
+Solving...
+Solving the linear system using UMFPACK
+Overall residual at iteration 1 = 0.000307979
+Residual for equation 0 is: 5.66764e-10
+Residual for equation 1 is: 0.000216805
+Residual for equation 2 is: 0.000218738
+Solving the linear system using UMFPACK
+Overall residual at iteration 2 = 1.21794e-07
+Residual for equation 0 is: 2.2315e-13
+Residual for equation 1 is: 8.612e-08
+Residual for equation 2 is: 8.61227e-08
+Solving the linear system using UMFPACK
+Overall residual at iteration 3 = 6.49226e-13
+Residual for equation 0 is: 4.97786e-20
+Residual for equation 1 is: 1.8539e-14
+Residual for equation 2 is: 6.48961e-13
+Solution: 3: 2009 2009 2009
+Cycle = 1 : 
+Entering estimate...
+Exited estimate
+Levels:4
+Cells:915
+Dofs:11640(3880,3880,3880) sorting by component
+Exited remesh
+Solving...
+Solving the linear system using UMFPACK
+Overall residual at iteration 1 = 1.422e-10
+Residual for equation 0 is: 2.60541e-16
+Residual for equation 1 is: 1.00547e-10
+Residual for equation 2 is: 1.00554e-10
+Solution: 3: 3880 3880 3880
+ sorting by component
+Response current is : -0.777879
+Current density: 0.777879 at cell param_value 0.644
+=============================================================================
+=============================================================================
+=============================================================================
+Iteration : 5
+Solving for...
+Parameter name: 
+Cell param_value: 0.57
+======
+YOU ARE CURRENTLY SOLVING A CATHODE MODEL
+Application-&gt;DoF-&gt;BlockMatrix-&gt;OptimizationBlockMatrix
+-&gt;FuelCellShop::Equation::NewFicksTransportEquation
+-&gt;FuelCellShop::Equation::ElectronTransportEquation
+-&gt;FuelCellShop::Equation::ProtonTransportEquation
+-&gt;FuelCellShop::Equation::ReactionSourceTerms
+-&gt;FuelCell::Application::AppCathode-2D
+YOU ARE USING Newton3pp NEWTON SOLVER
+Application-&gt;Copy-&gt;Newton3ppBase-&gt;-&gt;AdaptiveRefinement
+Parameters: data.prm
+FESystem&lt;2&gt;[FE_Q&lt;2&gt;(2)^3]
+ 
+name: Cathode
+Generating new grid...
+Using FCST grid generator.
+Levels:3
+Cells:480
+Dofs:6027(2009,2009,2009) sorting by component
+name: DesignFibrousGDL
+name: SGL24BC
+ Created a SGL24BC MPL
+Tafel kinetics.
+Cycle = 0 : 
+Correcting the initial guess
+Solving...
+Solving the linear system using UMFPACK
+Overall residual at iteration 1 = 0.000248588
+Residual for equation 0 is: 4.56746e-10
+Residual for equation 1 is: 0.000175278
+Residual for equation 2 is: 0.000176277
+Solving the linear system using UMFPACK
+Overall residual at iteration 2 = 4.48377e-08
+Residual for equation 0 is: 8.21513e-14
+Residual for equation 1 is: 3.17045e-08
+Residual for equation 2 is: 3.17056e-08
+Solving the linear system using UMFPACK
+Overall residual at iteration 3 = 5.74932e-13
+Residual for equation 0 is: 1.36303e-20
+Residual for equation 1 is: 1.67676e-15
+Residual for equation 2 is: 5.7493e-13
+Solution: 3: 2009 2009 2009
+Cycle = 1 : 
+Entering estimate...
+Exited estimate
+Levels:4
+Cells:915
+Dofs:11673(3891,3891,3891) sorting by component
+Exited remesh
+Solving...
+Solving the linear system using UMFPACK
+Overall residual at iteration 1 = 1.1851e-10
+Residual for equation 0 is: 2.1712e-16
+Residual for equation 1 is: 8.37916e-11
+Residual for equation 2 is: 8.38064e-11
+Solution: 3: 3891 3891 3891
+ sorting by component
+Response current is : -0.861166
+Current density: 0.861166 at cell param_value 0.57
+=============================================================================
+=============================================================================
+=============================================================================
+Iteration : 6
+Solving for...
+Parameter name: 
+Cell param_value: 0.496
+======
+YOU ARE CURRENTLY SOLVING A CATHODE MODEL
+Application-&gt;DoF-&gt;BlockMatrix-&gt;OptimizationBlockMatrix
+-&gt;FuelCellShop::Equation::NewFicksTransportEquation
+-&gt;FuelCellShop::Equation::ElectronTransportEquation
+-&gt;FuelCellShop::Equation::ProtonTransportEquation
+-&gt;FuelCellShop::Equation::ReactionSourceTerms
+-&gt;FuelCell::Application::AppCathode-2D
+YOU ARE USING Newton3pp NEWTON SOLVER
+Application-&gt;Copy-&gt;Newton3ppBase-&gt;-&gt;AdaptiveRefinement
+Parameters: data.prm
+FESystem&lt;2&gt;[FE_Q&lt;2&gt;(2)^3]
+ 
+name: Cathode
+Generating new grid...
+Using FCST grid generator.
+Levels:3
+Cells:480
+Dofs:6027(2009,2009,2009) sorting by component
+name: DesignFibrousGDL
+name: SGL24BC
+ Created a SGL24BC MPL
+Tafel kinetics.
+Cycle = 0 : 
+Correcting the initial guess
+Solving...
+Solving the linear system using UMFPACK
+Overall residual at iteration 1 = 0.00016468
+Residual for equation 0 is: 3.02306e-10
+Residual for equation 1 is: 0.000116219
+Residual for equation 2 is: 0.000116673
+Solving the linear system using UMFPACK
+Overall residual at iteration 2 = 1.41059e-08
+Residual for equation 0 is: 2.58445e-14
+Residual for equation 1 is: 9.97425e-09
+Residual for equation 2 is: 9.97446e-09
+Solving the linear system using UMFPACK
+Overall residual at iteration 3 = 4.2329e-13
+Residual for equation 0 is: 1.23922e-20
+Residual for equation 1 is: 1.86093e-16
+Residual for equation 2 is: 4.2329e-13
+Solution: 3: 2009 2009 2009
+Cycle = 1 : 
+Entering estimate...
+Exited estimate
+Levels:4
+Cells:915
+Dofs:11691(3897,3897,3897) sorting by component
+Exited remesh
+Solving...
+Solving the linear system using UMFPACK
+Overall residual at iteration 1 = 7.64432e-11
+Residual for equation 0 is: 1.40055e-16
+Residual for equation 1 is: 5.40511e-11
+Residual for equation 2 is: 5.40559e-11
+Solution: 3: 3897 3897 3897
+ sorting by component
+Response current is : -0.907746
+Current density: 0.907746 at cell param_value 0.496
+=============================================================================
+=============================================================================
+=============================================================================
+Iteration : 7
+Solving for...
+Parameter name: 
+Cell param_value: 0.422
+======
+YOU ARE CURRENTLY SOLVING A CATHODE MODEL
+Application-&gt;DoF-&gt;BlockMatrix-&gt;OptimizationBlockMatrix
+-&gt;FuelCellShop::Equation::NewFicksTransportEquation
+-&gt;FuelCellShop::Equation::ElectronTransportEquation
+-&gt;FuelCellShop::Equation::ProtonTransportEquation
+-&gt;FuelCellShop::Equation::ReactionSourceTerms
+-&gt;FuelCell::Application::AppCathode-2D
+YOU ARE USING Newton3pp NEWTON SOLVER
+Application-&gt;Copy-&gt;Newton3ppBase-&gt;-&gt;AdaptiveRefinement
+Parameters: data.prm
+FESystem&lt;2&gt;[FE_Q&lt;2&gt;(2)^3]
+ 
+name: Cathode
+Generating new grid...
+Using FCST grid generator.
+Levels:3
+Cells:480
+Dofs:6027(2009,2009,2009) sorting by component
+name: DesignFibrousGDL
+name: SGL24BC
+ Created a SGL24BC MPL
+Tafel kinetics.
+Cycle = 0 : 
+Correcting the initial guess
+Solving...
+Solving the linear system using UMFPACK
+Overall residual at iteration 1 = 9.50716e-05
+Residual for equation 0 is: 1.74448e-10
+Residual for equation 1 is: 6.71247e-05
+Residual for equation 2 is: 6.73267e-05
+Solving the linear system using UMFPACK
+Overall residual at iteration 2 = 3.03411e-09
+Residual for equation 0 is: 5.55902e-15
+Residual for equation 1 is: 2.14543e-09
+Residual for equation 2 is: 2.14546e-09
+Solution: 3: 2009 2009 2009
+Cycle = 1 : 
+Entering estimate...
+Exited estimate
+Levels:4
+Cells:915
+Dofs:11691(3897,3897,3897) sorting by component
+Exited remesh
+Solving...
+Solving the linear system using UMFPACK
+Overall residual at iteration 1 = 4.25408e-11
+Residual for equation 0 is: 7.79396e-17
+Residual for equation 1 is: 3.00792e-11
+Residual for equation 2 is: 3.00826e-11
+Solution: 3: 3897 3897 3897
+ sorting by component
+Response current is : -0.932032
+Current density: 0.932032 at cell param_value 0.422
+=============================================================================
+=============================================================================
+=============================================================================
+Iteration : 8
+Solving for...
+Parameter name: 
+Cell param_value: 0.348
+======
+YOU ARE CURRENTLY SOLVING A CATHODE MODEL
+Application-&gt;DoF-&gt;BlockMatrix-&gt;OptimizationBlockMatrix
+-&gt;FuelCellShop::Equation::NewFicksTransportEquation
+-&gt;FuelCellShop::Equation::ElectronTransportEquation
+-&gt;FuelCellShop::Equation::ProtonTransportEquation
+-&gt;FuelCellShop::Equation::ReactionSourceTerms
+-&gt;FuelCell::Application::AppCathode-2D
+YOU ARE USING Newton3pp NEWTON SOLVER
+Application-&gt;Copy-&gt;Newton3ppBase-&gt;-&gt;AdaptiveRefinement
+Parameters: data.prm
+FESystem&lt;2&gt;[FE_Q&lt;2&gt;(2)^3]
+ 
+name: Cathode
+Generating new grid...
+Using FCST grid generator.
+Levels:3
+Cells:480
+Dofs:6027(2009,2009,2009) sorting by component
+name: DesignFibrousGDL
+name: SGL24BC
+ Created a SGL24BC MPL
+Tafel kinetics.
+Cycle = 0 : 
+Correcting the initial guess
+Solving...
+Solving the linear system using UMFPACK
+Overall residual at iteration 1 = 5.02346e-05
+Residual for equation 0 is: 9.21567e-11
+Residual for equation 1 is: 3.54753e-05
+Residual for equation 2 is: 3.55671e-05
+Solving the linear system using UMFPACK
+Overall residual at iteration 2 = 4.75812e-10
+Residual for equation 0 is: 8.71766e-16
+Residual for equation 1 is: 3.36447e-10
+Residual for equation 2 is: 3.36452e-10
+Solution: 3: 2009 2009 2009
+Cycle = 1 : 
+Entering estimate...
+Exited estimate
+Levels:4
+Cells:915
+Dofs:11694(3898,3898,3898) sorting by component
+Exited remesh
+Solving...
+Solving the linear system using UMFPACK
+Overall residual at iteration 1 = 2.21595e-11
+Residual for equation 0 is: 4.05914e-17
+Residual for equation 1 is: 1.56655e-11
+Residual for equation 2 is: 1.56729e-11
+Solution: 3: 3898 3898 3898
+ sorting by component
+Response current is : -0.94416
+Current density: 0.94416 at cell param_value 0.348
+=============================================================================
+=============================================================================
+=============================================================================
+Iteration : 9
+Solving for...
+Parameter name: 
+Cell param_value: 0.274
+======
+YOU ARE CURRENTLY SOLVING A CATHODE MODEL
+Application-&gt;DoF-&gt;BlockMatrix-&gt;OptimizationBlockMatrix
+-&gt;FuelCellShop::Equation::NewFicksTransportEquation
+-&gt;FuelCellShop::Equation::ElectronTransportEquation
+-&gt;FuelCellShop::Equation::ProtonTransportEquation
+-&gt;FuelCellShop::Equation::ReactionSourceTerms
+-&gt;FuelCell::Application::AppCathode-2D
+YOU ARE USING Newton3pp NEWTON SOLVER
+Application-&gt;Copy-&gt;Newton3ppBase-&gt;-&gt;AdaptiveRefinement
+Parameters: data.prm
+FESystem&lt;2&gt;[FE_Q&lt;2&gt;(2)^3]
+ 
+name: Cathode
+Generating new grid...
+Using FCST grid generator.
+Levels:3
+Cells:480
+Dofs:6027(2009,2009,2009) sorting by component
+name: DesignFibrousGDL
+name: SGL24BC
+ Created a SGL24BC MPL
+Tafel kinetics.
+Cycle = 0 : 
+Correcting the initial guess
+Solving...
+Solving the linear system using UMFPACK
+Overall residual at iteration 1 = 2.52255e-05
+Residual for equation 0 is: 4.62723e-11
+Residual for equation 1 is: 1.78159e-05
+Residual for equation 2 is: 1.78584e-05
+Solving the linear system using UMFPACK
+Overall residual at iteration 2 = 6.20538e-11
+Residual for equation 0 is: 1.13699e-16
+Residual for equation 1 is: 4.38806e-11
+Residual for equation 2 is: 4.38767e-11
+Solution: 3: 2009 2009 2009
+Cycle = 1 : 
+Entering estimate...
+Exited estimate
+Levels:4
+Cells:915
+Dofs:11694(3898,3898,3898) sorting by component
+Exited remesh
+Solving...
+Solving the linear system using UMFPACK
+Overall residual at iteration 1 = 1.096e-11
+Residual for equation 0 is: 2.00667e-17
+Residual for equation 1 is: 7.74437e-12
+Residual for equation 2 is: 7.75537e-12
+Solution: 3: 3898 3898 3898
+ sorting by component
+Response current is : -0.950075
+Current density: 0.950075 at cell param_value 0.274
+=============================================================================
+=============================================================================
+=============================================================================
+Iteration : 10
+Solving for...
+Parameter name: 
+Cell param_value: 0.2
+======
+YOU ARE CURRENTLY SOLVING A CATHODE MODEL
+Application-&gt;DoF-&gt;BlockMatrix-&gt;OptimizationBlockMatrix
+-&gt;FuelCellShop::Equation::NewFicksTransportEquation
+-&gt;FuelCellShop::Equation::ElectronTransportEquation
+-&gt;FuelCellShop::Equation::ProtonTransportEquation
+-&gt;FuelCellShop::Equation::ReactionSourceTerms
+-&gt;FuelCell::Application::AppCathode-2D
+YOU ARE USING Newton3pp NEWTON SOLVER
+Application-&gt;Copy-&gt;Newton3ppBase-&gt;-&gt;AdaptiveRefinement
+Parameters: data.prm
+FESystem&lt;2&gt;[FE_Q&lt;2&gt;(2)^3]
+ 
+name: Cathode
+Generating new grid...
+Using FCST grid generator.
+Levels:3
+Cells:480
+Dofs:6027(2009,2009,2009) sorting by component
+name: DesignFibrousGDL
+name: SGL24BC
+ Created a SGL24BC MPL
+Tafel kinetics.
+Cycle = 0 : 
+Correcting the initial guess
+Solving...
+Solving the linear system using UMFPACK
+Overall residual at iteration 1 = 1.23309e-05
+Residual for equation 0 is: 2.26181e-11
+Residual for equation 1 is: 8.70928e-06
+Residual for equation 2 is: 8.72925e-06
+Solving the linear system using UMFPACK
+Overall residual at iteration 2 = 7.35496e-12
+Residual for equation 0 is: 1.34681e-17
+Residual for equation 1 is: 5.19789e-12
+Residual for equation 2 is: 5.20358e-12
+Solution: 3: 2009 2009 2009
+Cycle = 1 : 
+Entering estimate...
+Exited estimate
+Levels:4
+Cells:915
+Dofs:11694(3898,3898,3898) sorting by component
+Exited remesh
+Solving...
+Solving the linear system using UMFPACK
+Overall residual at iteration 1 = 5.31544e-12
+Residual for equation 0 is: 9.72908e-18
+Residual for equation 1 is: 3.75477e-12
+Residual for equation 2 is: 3.7624e-12
+Solution: 3: 3898 3898 3898
+ sorting by component
+Response current is : -0.952925
+Current density: 0.952925 at cell param_value 0.2
+=============================================================================
+=============================================================================
+The program was executed in: 5.64656 seconds
+=============== END ====================
+</pre></div>
+</div>
+<p>To plot the polarization curves we use the plotting utility available in <strong>PythonFCST</strong> and compare the simulation results with the reference results.</p>
+<div class="highlight-text"><div class="highlight"><pre>$ fcst_plot_polcurve.py polarization_curve.dat polarization_curve_reference.dat --label Current Reference --output article
+Your version of matplotlib does not support the parameter  text.fontsize
+Your version of matplotlib does not support the parameter  ticks.font
+==================================================
+= Creates postprocessing plots from the tabular output file of the fcst polcurve sweep
+==================================================
+--------------------------------------------------
+= - Parse Commandline 
+
+
+
+--------------------------------------------------
+= - Parse file  polarization_curve.dat 
+
+Column header:  [&#39;Cell voltage [V]&#39;, &#39;Cathode current [A/cm2]&#39;]
+Rows:           11
+
+
+
+--------------------------------------------------
+= - Parse file  polarization_curve_reference.dat 
+
+Column header:  [&#39;Cell voltage [V]&#39;, &#39;Cathode current [A/cm2]&#39;]
+Rows:           6
+Save figure  polcurve
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../../_images/article_polcurve.png"><img alt="../../_images/article_polcurve.png" class="align-center" src="../../_images/article_polcurve.png" style="width: 517.5px; height: 361.0px;" /></a>
+</div>
+</div>
+<div class="section" id="optimization-study">
+<h2>2.6.2.2. Optimization study<a class="headerlink" href="#optimization-study" title="Permalink to this headline">¶</a></h2>
+<p>In order to perform an optimization study, several changes are necessary in the main.prm (.xml) file. Also, a new file is need to provide information to the optimizer.</p>
+<div class="section" id="id1">
+<h3>2.6.2.2.1. The <tt class="docutils literal"><span class="pre">main.xml</span></tt> file<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>The <em>main.xml</em> file needs to be modified as follows:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>In section <em>Simulator</em>, set <em>Analysis type</em> to Optimization</li>
+<li>In section <em>Simulator</em>, subsection <em>Optimization</em> specify the optimization file in <em>optimization parameter file name</em></li>
+</ol>
+</div></blockquote>
+<p>Example:</p>
+<div class="highlight-python"><pre>######################################################################
+
+include ../template/main.prm
+
+######################################################################
+subsection Simulator
+
+  set Analysis type = Optimization
+  
+  subsection Optimization
+    set optimization parameter file name = opt.prm
+    set Dakota direct = true
+  end
+  
+end
+######################################################################
+</pre>
+</div>
+</div>
+<div class="section" id="the-opt-xml-file">
+<h3>2.6.2.2.2. The <tt class="docutils literal"><span class="pre">opt.xml</span></tt> file<a class="headerlink" href="#the-opt-xml-file" title="Permalink to this headline">¶</a></h3>
+<p>The <em>opt.xml</em> is used to specify the optimization number of design variables, and its initial value, upper and lower bounds. It also specifies the number of objectives and constraints and if they are equality or inequality
+constraints. Finally, it specifies the type of optimizer to use. In the article case, the file is:</p>
+<div class="highlight-python"><pre>######################################################################
+#
+#  This file is used to run multi-dimensional parametric studies. 
+#  See end of file for a list of possible design variables.
+#
+#   Copyright (C) 2013, Kailyn Domican
+#
+######################################################################
+
+include ../template/opt.prm</pre>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">2.6.2. Example: Optimization of an agglomerate cathode electrode</a><ul>
+<li><a class="reference internal" href="#polarization-curve">2.6.2.1. Polarization curve</a><ul>
+<li><a class="reference internal" href="#the-main-xml-file">2.6.2.1.1. The <tt class="docutils literal"><span class="pre">main.xml</span></tt> file</a></li>
+<li><a class="reference internal" href="#results">2.6.2.1.2. Results</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#optimization-study">2.6.2.2. Optimization study</a><ul>
+<li><a class="reference internal" href="#id1">2.6.2.2.1. The <tt class="docutils literal"><span class="pre">main.xml</span></tt> file</a></li>
+<li><a class="reference internal" href="#the-opt-xml-file">2.6.2.2.2. The <tt class="docutils literal"><span class="pre">opt.xml</span></tt> file</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../Secanell_EA07_Numerical_Optimization_PEMFC_Cathode_Electrodes/readme.html"
+                        title="previous chapter">2.6.1. Example: Optimization of a macro-homogeneous cathode electrode (Ref: Secanell, Electrochimica Acta, 2007)</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../../ohmic/readme.html"
+                        title="next chapter">3. Introduction to AppOhmic</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/cathode/Secanell_EA07_MultiVariable_Optimization_PEMFC_Cathodes_Agglomerate_Model/readme.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../ohmic/readme.html" title="3. Introduction to AppOhmic"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../Secanell_EA07_Numerical_Optimization_PEMFC_Cathode_Electrodes/readme.html" title="2.6.1. Example: Optimization of a macro-homogeneous cathode electrode (Ref: Secanell, Electrochimica Acta, 2007)"
+             >previous</a> |</li>
+        <li><a href="../../index.html">Tutorial v0.2 documentation</a> &raquo;</li>
+          <li><a href="../readme.html" >2. Introduction to AppCathode</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright Energy Systems Design Laboratory, 2015.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

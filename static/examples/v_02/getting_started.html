@@ -1,0 +1,175 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>1. Getting started &mdash; Tutorial v0.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     'v0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Tutorial v0.2 documentation" href="index.html" />
+    <link rel="next" title="2. Introduction to AppCathode" href="cathode/readme.html" />
+    <link rel="prev" title="Tutorials for openFCST" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="cathode/readme.html" title="2. Introduction to AppCathode"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Tutorials for openFCST"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Tutorial v0.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="getting-started">
+<h1>1. Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="installing-openfcst">
+<h2>1.1. Installing OpenFCST<a class="headerlink" href="#installing-openfcst" title="Permalink to this headline">¶</a></h2>
+<p>To help with configuring OpenFCST with CMake we have provide a configure script, i.e., <strong>openFCST_install</strong>.</p>
+<p>For a typical installation, go to the <cite>fcst/</cite> folder, and enter the following:</p>
+<div class="code highlight-python"><pre>$./openFCST_install --cores=&lt;number of cores&gt; --install-dir=path_for_installation_directory</pre>
+</div>
+<p>where the variable <strong>&#8211;cores</strong> allows you to compile the program using multiple CPUs and <strong>&#8211;install-dir</strong> allows you to specify the
+installation directory where openFCST will be installed. By default, openFCST will create an in-build installation the openfcst/ folder.
+Inside the openfcst/ folder, two new folders will appear</p>
+<blockquote>
+<div><ul class="simple">
+<li>Install</li>
+<li>Build</li>
+</ul>
+</div></blockquote>
+<p>The folder <strong>Install</strong>  contains the installation of the code. It contains a <strong>/bin</strong> folder where you will find the executable files
+for OpenFCST, i.e. <strong>fuel_cell-2d.bin</strong> and <strong>fuel_cell-3d.bin</strong> for 2D and 3D simulations, and the GUI file, i.e. <strong>fcst_gui</strong>. It
+also contains the folder <strong>examples</strong> where you will find several tutorials on how to run openFCST. The folder <strong>doc</strong> contains
+the HTML documentation for developers.
+The <strong>Build</strong> folder is the folder where all object files needed during compilation are installed. Users can ignore this folder.</p>
+<p>For more options and information about the installation script type:</p>
+<div class="code highlight-python"><pre>$./openFCST_install --help</pre>
+</div>
+<div class="section" id="system-requirements">
+<h3>1.1.1. System requirements<a class="headerlink" href="#system-requirements" title="Permalink to this headline">¶</a></h3>
+<p>The following software needs to also be installed in your computer in order for FCST to compile:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>GNU make and C++11 support, gcc version 4.7 or later (4.7.2 Recommended)</li>
+<li>GCC</li>
+<li>BLAS and LAPACK libraries</li>
+<li>OpenMPI compiler</li>
+<li>gfortran compiler</li>
+<li>Bison</li>
+<li>qt4-designer</li>
+<li>For generating the documentation: DOxygen</li>
+<li>Boost; the specific packages are iostreams, serialization, system, thread, filesystem, regex, signals, programoptions</li>
+<li>FLEX (For Dakota)</li>
+<li>Python Packages: SciPy, NumPy, ipython, Sphinx, evtk, vtk, mayavi</li>
+</ol>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="setting-up-a-simulation">
+<h2>1.2. Setting up a simulation<a class="headerlink" href="#setting-up-a-simulation" title="Permalink to this headline">¶</a></h2>
+<p>The easiest way to start a simulation with OpenFCST is running the examples provided in the <cite>examples</cite> folder. Each example is a chapter in this user guide. Once
+you are comfortable running the examples, then you can use the GUI to modify different parameters to perform new simulations.</p>
+<p>We recommend that you use the OpenFCST graphical user interface. To load the examples in the GUI, first you will need to create the <cite>.xml</cite> files that the GUI
+reads and then you will have to open them with the GUI. For an example see the Introduction to AppCathode tutorial</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">1. Getting started</a><ul>
+<li><a class="reference internal" href="#installing-openfcst">1.1. Installing OpenFCST</a><ul>
+<li><a class="reference internal" href="#system-requirements">1.1.1. System requirements</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#setting-up-a-simulation">1.2. Setting up a simulation</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Tutorials for openFCST</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="cathode/readme.html"
+                        title="next chapter">2. Introduction to AppCathode</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/getting_started.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="cathode/readme.html" title="2. Introduction to AppCathode"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Tutorials for openFCST"
+             >previous</a> |</li>
+        <li><a href="index.html">Tutorial v0.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright Energy Systems Design Laboratory, 2015.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
