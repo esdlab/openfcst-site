@@ -21,27 +21,33 @@ body {
     & > main {
         display: grid;
         grid-area: main;
-        grid-template-columns: 2fr 1fr;
+        grid-template-columns: 3fr 1fr;
         grid-template-areas: "main sidebar";
-        gap: 1em;
+        gap: 2em;
 
         /* Sidebar */
         & > aside {
             grid-area: sidebar;
-            width: 100%;
-        }
 
+            section {
+                border-radius: var(--border-radius);
+                border: 0.1em solid var(--background-3);
+                padding: 1em;
+                margin-top: 1em;
+
+                & > div:not(:last-child) {
+                    border-bottom: 0.1em dotted var(--background-3);
+                    padding-bottom: 0.5em;
+                    margin-bottom: 0.5em;
+                }
+            }
+        }
     }
 }
 
 .sponsors {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
-
     img {
         width: 100%;
-        aspect-ratio: 3/2;
-        object-fit: contain;
     }
 }
 
