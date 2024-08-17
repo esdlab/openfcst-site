@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>2.6.1. Example: Optimization of a macro-homogeneous cathode electrode (Ref: Secanell, Electrochimica Acta, 2007) &mdash; Tutorial v0.3 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     'v0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Tutorial v0.3 documentation" href="../../index.html" />
+    <link rel="up" title="2. Introduction to AppCathode" href="../readme.html" />
+    <link rel="next" title="2.6.2. Example: Optimization of an agglomerate cathode electrode" href="../Secanell_EA07_MultiVariable_Optimization_PEMFC_Cathodes_Agglomerate_Model/readme.html" />
+    <link rel="prev" title="2. Introduction to AppCathode" href="../readme.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../Secanell_EA07_MultiVariable_Optimization_PEMFC_Cathodes_Agglomerate_Model/readme.html" title="2.6.2. Example: Optimization of an agglomerate cathode electrode"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../readme.html" title="2. Introduction to AppCathode"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Tutorial v0.3 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../readme.html" accesskey="U">2. Introduction to AppCathode</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="example-optimization-of-a-macro-homogeneous-cathode-electrode-ref-secanell-electrochimica-acta-2007">
+<h1>2.6.1. Example: Optimization of a macro-homogeneous cathode electrode (Ref: Secanell, Electrochimica Acta, 2007)<a class="headerlink" href="#example-optimization-of-a-macro-homogeneous-cathode-electrode-ref-secanell-electrochimica-acta-2007" title="Permalink to this headline">¶</a></h1>
+<p>This folder contains the files used in order to reproduce the results reported in reference [1].</p>
+<p>The data is subdivided as follows:</p>
+<ol class="arabic simple">
+<li>Directory <code class="docutils literal"><span class="pre">template/</span></code> contains the main main.prm, data.prm and opt.prm file used in the simulations. In each of the sub-folders these files are extended</li>
+<li>Directory <code class="docutils literal"><span class="pre">analysis/</span></code> contains the data to run a single point in the polarization curve. It uses the data in <code class="docutils literal"><span class="pre">template/</span></code> directly without modifications.</li>
+<li>Directory <code class="docutils literal"><span class="pre">parameteric/</span></code> contains the data files used to compute a full polarization curve. To achieve this goal, only the main.prm is modified with respect to the template files by including information about the number of points needed in the polarization curve. The directory also includes an .ods file used to compare the data. The results, as of Feb. 2, 2014, OpenFCST Rev: 1817 match the article.</li>
+</ol>
+<p>4. Directory <code class="docutils literal"><span class="pre">design/</span></code> contains two subfolders. Each folder contains the necessary files to setup a simulation in order to obtain the results in sections 4.1 and 4.2 in the artice. Each subfolder references the template data files, so only the main modifications to the original file are highlighted.
+Each subdirectory also includes an .ods file used to compare the data. The results, as of Feb. 2, 2014, OpenFCST Rev: 1817 match the article.</p>
+<p><strong>Warning:</strong> This directory is not tested with regression tests, therefore it is possible that the parameter file has to be modified slightly in order to obtain the correct solution. The folder was last validated on Feb. 3, 2015
+prior to openFCST release 0.2.</p>
+<div class="section" id="references">
+<h2>2.6.1.1. References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<ol class="upperalpha simple" start="13">
+<li>Secanell , B. Carnes , A. Suleman , N. Djilali, Numerical optimization of proton exchange membrane fuel cell cathodes, Electrochimica Acta 52 (2007) 2668–2682.</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">2.6.1. Example: Optimization of a macro-homogeneous cathode electrode (Ref: Secanell, Electrochimica Acta, 2007)</a><ul>
+<li><a class="reference internal" href="#references">2.6.1.1. References</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../readme.html"
+                        title="previous chapter">2. Introduction to AppCathode</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../Secanell_EA07_MultiVariable_Optimization_PEMFC_Cathodes_Agglomerate_Model/readme.html"
+                        title="next chapter">2.6.2. Example: Optimization of an agglomerate cathode electrode</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/cathode/Secanell_EA07_Numerical_Optimization_PEMFC_Cathode_Electrodes/readme.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../Secanell_EA07_MultiVariable_Optimization_PEMFC_Cathodes_Agglomerate_Model/readme.html" title="2.6.2. Example: Optimization of an agglomerate cathode electrode"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../readme.html" title="2. Introduction to AppCathode"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Tutorial v0.3 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../readme.html" >2. Introduction to AppCathode</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright Energy Systems Design Laboratory, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

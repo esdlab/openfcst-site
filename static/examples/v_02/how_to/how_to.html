@@ -1,0 +1,184 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>6. How to create your own tutorial &mdash; Tutorial v0.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'v0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Tutorial v0.2 documentation" href="../index.html" />
+    <link rel="prev" title="5. Introduction to AppPemfcNIThermal" href="../PemfcNIThermal/readme.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../PemfcNIThermal/readme.html" title="5. Introduction to AppPemfcNIThermal"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Tutorial v0.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="how-to-create-your-own-tutorial">
+<h1>6. How to create your own tutorial<a class="headerlink" href="#how-to-create-your-own-tutorial" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>6.1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This tutorial describes the main structure of each tutorial for OpenFCST. Each tutorial is associated with the different applications in
+OpenFCST and it is intented to provide an example for users to learn now to use the application.</p>
+<p>The main structure of a tuturial should contain:</p>
+<ol class="arabic simple">
+<li>Governing equations: This section explains the equations that are solved in the application that is being showcased.</li>
+</ol>
+<p>2. Directory structure: This section explains the different folders that are in the tutorial sub-folder. Each subfolder
+can be used to explain a different feature available for the given application.</p>
+<ol class="arabic simple" start="3">
+<li>Setting up a simulation</li>
+<li>Examples: This section can contain several sub-sections</li>
+</ol>
+</div>
+<div class="section" id="governing-equations">
+<h2>6.2. Governing equations<a class="headerlink" href="#governing-equations" title="Permalink to this headline">¶</a></h2>
+<p>The governing equations are (...).</p>
+<p>More information can be found in <a class="reference internal" href="#secanell07a">Secanell07a</a>.</p>
+</div>
+<div class="section" id="directory-structure">
+<h2>6.3. Directory structure<a class="headerlink" href="#directory-structure" title="Permalink to this headline">¶</a></h2>
+<p>Each directory consists of at least following folders:</p>
+<p>1. template : This folder contains the default files for running all the examples in the other folders. Please <strong>do not</strong> modify this file as
+it will result in all tests failing. If you would like to create your own example either include this file to your simulation using the <em>include</em>
+command or copy the file to a different location.</p>
+<ol class="arabic simple" start="2">
+<li>analysis : This folder is used to run an analysis simulation using the template file.</li>
+</ol>
+<p>3. other example folders : These folders shold contain the <tt class="code docutils literal"><span class="pre">main_test.prm</span></tt> and <tt class="code docutils literal"><span class="pre">data_test.prm</span></tt> files needed to run a simulation to reproduce the example
+results. Note the data file includes the template find and adds the necessary modifications.
+The script to run a test to make sure the polarization curve is running correctly is in the folder <em>regression</em> together with the default data the test is compared to.
+Only the examples that are used in regression tests would have a regression subfolder.</p>
+</div>
+<div class="section" id="setting-up-a-simulation">
+<h2>6.4. Setting up a simulation<a class="headerlink" href="#setting-up-a-simulation" title="Permalink to this headline">¶</a></h2>
+<p>In this section, the <tt class="code docutils literal"><span class="pre">main.prm</span></tt> and <tt class="code docutils literal"><span class="pre">data.prm</span></tt> files are described for the given application.</p>
+<p>a. The <tt class="code docutils literal"><span class="pre">main.prm</span></tt> / <tt class="code docutils literal"><span class="pre">main.xml</span></tt> file: This file is used to select the appropriate: a) type of analysis, i.e. analysis, parametric study, polarization curve and optimization study; application;
+b) the nonlinear solver; c) data file name; and, d) several less critical parameters.
+b. The <tt class="code docutils literal"><span class="pre">data.prm</span></tt> / <tt class="code docutils literal"><span class="pre">data.xml</span></tt> file: This file is used to input all the input data used for the simulation for the application selected.</p>
+<p>Both these files can either be loaded and modified via the openFCST graphical user interface (GUI) or modified as a text file.</p>
+<div class="section" id="setting-up-a-simulation-using-the-openfcst-graphical-user-interface-gui">
+<h3>6.4.1. Setting up a simulation using the OpenFCST graphical user interface (GUI)<a class="headerlink" href="#setting-up-a-simulation-using-the-openfcst-graphical-user-interface-gui" title="Permalink to this headline">¶</a></h3>
+<p>Explain how to setup a simulation using the GUI, in particular explain the main sections that need to be modified in each file.</p>
+</div>
+<div class="section" id="setting-up-a-simulation-using-a-text-prm-file">
+<h3>6.4.2. Setting up a simulation using a text (.prm) file<a class="headerlink" href="#setting-up-a-simulation-using-a-text-prm-file" title="Permalink to this headline">¶</a></h3>
+<p>Explain how to setup the data file (main differences from previous applications).</p>
+</div>
+<div class="section" id="results">
+<h3>6.4.3. Results<a class="headerlink" href="#results" title="Permalink to this headline">¶</a></h3>
+<p>Explain the results obtained usig the default <tt class="code docutils literal"><span class="pre">main.prm</span></tt> and <tt class="code docutils literal"><span class="pre">data.prm</span></tt> files to run an analysis case.</p>
+</div>
+</div>
+<div class="section" id="examples">
+<h2>6.5. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="references">
+<h2>6.6. References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<ol class="upperalpha simple" id="secanell07a" start="13">
+<li>Secanell, B. Carnes, A. Suleman and N. Djilali, &#8220;Numerical Optimization of Proton Exchange Membrane Fuel Cell Cathode Electrodes&#8221;, Electrochimica Acta, 52(7):2668-2682, 2007.</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">6. How to create your own tutorial</a><ul>
+<li><a class="reference internal" href="#introduction">6.1. Introduction</a></li>
+<li><a class="reference internal" href="#governing-equations">6.2. Governing equations</a></li>
+<li><a class="reference internal" href="#directory-structure">6.3. Directory structure</a></li>
+<li><a class="reference internal" href="#setting-up-a-simulation">6.4. Setting up a simulation</a><ul>
+<li><a class="reference internal" href="#setting-up-a-simulation-using-the-openfcst-graphical-user-interface-gui">6.4.1. Setting up a simulation using the OpenFCST graphical user interface (GUI)</a></li>
+<li><a class="reference internal" href="#setting-up-a-simulation-using-a-text-prm-file">6.4.2. Setting up a simulation using a text (.prm) file</a></li>
+<li><a class="reference internal" href="#results">6.4.3. Results</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#examples">6.5. Examples</a></li>
+<li><a class="reference internal" href="#references">6.6. References</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../PemfcNIThermal/readme.html"
+                        title="previous chapter">5. Introduction to AppPemfcNIThermal</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/how_to/how_to.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../PemfcNIThermal/readme.html" title="5. Introduction to AppPemfcNIThermal"
+             >previous</a> |</li>
+        <li><a href="../index.html">Tutorial v0.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright Energy Systems Design Laboratory, 2015.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

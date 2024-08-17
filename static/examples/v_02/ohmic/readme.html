@@ -1,0 +1,363 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>3. Introduction to AppOhmic &mdash; Tutorial v0.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'v0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Tutorial v0.2 documentation" href="../index.html" />
+    <link rel="next" title="4. Introduction to AppPemfc" href="../Pemfc/readme.html" />
+    <link rel="prev" title="2.6.2. Example: Optimization of an agglomerate cathode electrode" href="../cathode/Secanell_EA07_MultiVariable_Optimization_PEMFC_Cathodes_Agglomerate_Model/readme.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../Pemfc/readme.html" title="4. Introduction to AppPemfc"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../cathode/Secanell_EA07_MultiVariable_Optimization_PEMFC_Cathodes_Agglomerate_Model/readme.html" title="2.6.2. Example: Optimization of an agglomerate cathode electrode"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Tutorial v0.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="introduction-to-appohmic">
+<h1>3. Introduction to AppOhmic<a class="headerlink" href="#introduction-to-appohmic" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>3.1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>AppOhmic is an openFCST application whcih is used to study the electron transport in porous media. The electron transport governed by Ohm&#8217;s law is solved in the phase of interest using the FEM formulation of the weak-form of the equation.
+The application returns the total electronic flux (current) at the outlet face which can then be used to the calculate the effective conductivity of the media.</p>
+</div>
+<div class="section" id="governing-equation">
+<h2>3.2. Governing equation<a class="headerlink" href="#governing-equation" title="Permalink to this headline">¶</a></h2>
+<p>The governing equation is</p>
+<div class="math">
+<p><img src="../_images/math/7db590d20a920c84cf8836e9440b0951b1a913cf.png" alt="\nabla \cdot \left( \hat{\sigma}_{s} \cdot \mathbf{\nabla} \phi_s \right) = 0 \quad \in \quad \Omega"/></p>
+</div><p>The governing equation in the weak form is linear and can be solved directly using a linear solver like UMFPACK or GMRES.</p>
+<p>The solution variable is the electronic potential, <img class="math" src="../_images/math/5be95b57d16033654e62796146724cd990fc57d1.png" alt="\phi_s"/>.</p>
+</div>
+<div class="section" id="ohmic-example-directory-structure">
+<h2>3.3. Ohmic Example Directory structure<a class="headerlink" href="#ohmic-example-directory-structure" title="Permalink to this headline">¶</a></h2>
+<p>The ohmic directory consists of the following folders:</p>
+<p>1. template : This folder contains the default files for running all the examples in the other folders. Please <strong>do not</strong> modify this file as
+it will result in all tests failing. If you would like to create your own example either include this file to your simulation using the <em>include</em>
+command or copy the file to a different location.</p>
+<p>2. analysis : This folder contains the <tt class="code docutils literal"><span class="pre">main_test.prm</span></tt> and <tt class="code docutils literal"><span class="pre">data_test.prm</span></tt> files needed to run a simulation to obtain
+the electronic potential distribution in the porous media. Note the data file includes the template find and adds the necessary modifications.
+The script to run a test to make sure that the application and the equation class is running correctly is in the folder <em>regression</em> together with the default data the test is compared to.</p>
+</div>
+<div class="section" id="setting-up-an-ohmic-simulation">
+<h2>3.4. Setting up an ohmic simulation<a class="headerlink" href="#setting-up-an-ohmic-simulation" title="Permalink to this headline">¶</a></h2>
+<p>In order to run OpenFCST, two files are needed that provide the necessary information for OpenFCST to execute:
+a. A main file: This file is used to select the appropriate: a) application;
+b) problem definition: (linear in this case); c) data file name; and, d) several less critical parameters.
+b. A data file: This file is used to input all the input data used for the simulation for the application selected.</p>
+<p>Both these files can either be loaded and modified via the openFCST graphical user interface (GUI) or modified as a text file.</p>
+<div class="section" id="setting-up-a-simulation-using-the-openfcst-graphical-user-interface-gui">
+<h3>3.4.1. Setting up a simulation using the OpenFCST graphical user interface (GUI)<a class="headerlink" href="#setting-up-a-simulation-using-the-openfcst-graphical-user-interface-gui" title="Permalink to this headline">¶</a></h3>
+<p>If you are using the OpenFCST GUI, you will need to load the .xml files. You can generate an .xml file from a .prm file by calling openFCST as follows:</p>
+<div class="code highlight-python"><pre>$ openFCST-3d -c main.prm</pre>
+</div>
+<p>openFCST will directly parse the main.prm and the associated data and file (if specified in the main.prm file).</p>
+<p>If you would like to use the GUI, first launch the GUI by going to Install/bin and typing:</p>
+<div class="code highlight-python"><pre>$ ./fcst-gui</pre>
+</div>
+<p>Then, select the OpenFCST executable file that you would like the GUI to run, mainly openFCST-2d or openFCST-3d from the /Install/bin folder. Once
+this has been selected, the following screen will appear</p>
+<a class="reference internal image-reference" href="../_images/FCST_Gui_step11.png"><img alt="alternate text" class="align-center" src="../_images/FCST_Gui_step11.png" style="width: 960.0px; height: 540.0px;" /></a>
+<p>At this point, you can load your main.xml and data.xml files. Go to <tt class="docutils literal"><span class="pre">File&gt;</span> <span class="pre">Open</span> <span class="pre">Project...</span></tt> and select the <tt class="docutils literal"><span class="pre">main.xml</span></tt> and <tt class="docutils literal"><span class="pre">data.xml</span></tt> files. If you are planning on running an
+optimization simulation, then also load the <tt class="docutils literal"><span class="pre">opt.xml</span></tt> file, otherwise select <strong>No</strong> to loading a new simulation.</p>
+<p>Once <tt class="docutils literal"><span class="pre">main.xml</span></tt> and <tt class="docutils literal"><span class="pre">data.xml</span></tt> files are loaded, the following will appear in the GUI,</p>
+<a class="reference internal image-reference" href="../_images/FCST_Gui_step21.png"><img alt="alternate text" class="align-center" src="../_images/FCST_Gui_step21.png" style="width: 960.0px; height: 540.0px;" /></a>
+<p>At this point, you have several folders. Each folder contains options that you can modify. You can open each folder and, by hovering over the variable with your mouse,
+a text window will appear that explains the use of each input parameter. In our case, <em>simulation name</em> specifies that you are going to run <em>AppOhmic</em>. <em>Simulator specification</em>
+is only used for fluid applications, so it is not used here. <em>Solver name</em> specifies if the problem is linear or nonlinear and in the case of a nonlinear problem,
+the nonlinear solver to be used is selected. <em>Solver method</em> allows the user to use adaptive refinement and global refinement options so that the solution is refined
+during the solution. Analysis type is used to specify if you would simply like to run one simulation, obtain a polarization curve, perform a parameteric study or run
+an optimization study.  For this application only the analysis mode is available.</p>
+<p>To modify simulation data, go to the next tab, i.e. data.xml. The following screen will appear:</p>
+<a class="reference internal image-reference" href="../_images/FCST_Gui_step3_data1.png"><img alt="alternate text" class="align-center" src="../_images/FCST_Gui_step3_data1.png" style="width: 960.0px; height: 540.0px;" /></a>
+<p>In this screen, you can select the most suitable options to run your simulation. The most important folders are:
+a. Grid Generation: Specify the mesh you would like to use. You can either read a mesh from file (Type of mesh&gt;External mesh) or have openFCST create the geometry. In this case we use cathode.
+b. LinearApplication: Specify the linear solver and options to solve the linearized problem.
+c. Equations: Specify the equations you would like to solve, the initial solution and boundary condition values.
+d. Fuel Cell Data: Specify the layer properties.
+e. Output</p>
+<p>Once your parameters are set, simply press the <strong>Run</strong> button to launch the simulation. The ouput will be shown in the black screen to the right. The files in the directory also appear in the
+bottom right corner. Configure <em>Paraview</em> to open the .vtu files to analyze the output.</p>
+</div>
+<div class="section" id="setting-up-a-simulation-using-a-text-prm-file">
+<h3>3.4.2. Setting up a simulation using a text (.prm) file<a class="headerlink" href="#setting-up-a-simulation-using-a-text-prm-file" title="Permalink to this headline">¶</a></h3>
+<p>If instead of using the GUI, you would like to look at the files using a text editor, the .prm files are move convenient. As discussed, the <strong>main.prm</strong> file is the argument file supplied to the
+<strong>OpenFCST</strong> executable. The main.prm file should look like this:</p>
+<div class="highlight-python"><pre>######################################################################
+#   $Id: main.prm  2011-02-09 secanell $
+#
+#  This file is used to simulate app_diffusion and obtain a 
+#  a concentration profile
+#
+#
+#   Copyright (C) 2011 by Marc Secanell
+#
+######################################################################
+
+subsection Simulator
+
+  set simulator name = ohmic
+  set simulator parameter file name = data.prm
+  
+  set solver name = Linear
+
+  set Analysis type = Analysis
+  
+end</pre>
+</div>
+<p>The data.prm file for the cathode example is shown below:</p>
+<pre class="literal-block">
+######################################################################
+#   $Id: $
+#
+#  This file is used to simulate app_diffusion and to obtain
+#  a concentration profile for the species through the domain 
+#  This file will be called by the main.prm file. 
+#
+#   Copyright (C) 2011-13 by Marc Secanell
+#
+######################################################################
+
+###############
+subsection Grid generation
+
+  set Type of mesh = GridExternal  # Cathode | CathodeMPL | GridExternal
+  set File name = test.vtk  
+  set File type = vtk
+  set Initial refinement = 0
+  set Refinement         = global  #global | adaptive
+  set Sort Cuthill-McKee = false
+  set Sort by component  = true
+ 
+end
+
+###############
+subsection Initial Solution
+ set Read in initial solution from file      = false
+ set Output initial solution                 = false
+end
+###############
+
+###############
+subsection Adaptive refinement
+ set Number of Refinements                   = 3
+ set Output intermediate solutions           = false
+ set Output final solution                   = true
+ set Output intermediate responses           = false
+ set Use nonlinear solver for linear problem = false
+end
+###############
+
+###############
+subsection System management
+
+ set Number of solution variables = 1
+
+ subsection Solution variables
+  set Solution variable 1 = electronic_electrical_potential
+ end
+
+ subsection Equations
+  set Equation 1 = Electron Transport Equation
+ end
+
+end
+
+###############
+subsection Equations
+
+ subsection Electron Transport Equation
+
+  subsection Initial data
+   set electronic_electrical_potential = 0: 0.1  # where 0 indicates the material_id setup in the grid and 0.1 is the electronic potential in V
+  end
+
+  subsection Boundary data
+   set electronic_electrical_potential = 1: 0.4, 2:0.01 #where 1 &amp; 2 denote the boundary ids and 0.4 and 0.01 are the electronic potentials in V at the respective boundary
+  end
+ end
+
+
+end
+
+###############
+subsection Discretization
+  set Element = FESystem[FE_Q(1)] #FESystem[FE_Q(3)-FE_Q(1)^2] #FESystem[FE_Q(1)^3] #System of three fe
+  subsection Matrix
+    set Quadrature cell = -1
+    set Quadrature face = -1
+  end
+  subsection Residual
+    set Quadrature cell = -1
+    set Quadrature face = -1
+  end
+end
+
+###############
+subsection Fuel cell data
+  
+  ####
+  subsection Operating conditions
+     set Temperature cell = 353 #[K]
+     set Cathode pressure = 101265 #[Pa] (1 atm)
+     set Cathode relative humidity = 0.6
+  end
+  ####
+ 
+  ####
+  subsection Cathode gas diffusion layer
+  
+    set Gas diffusion layer type = DummyGDL #[ DesignFibrousGDL | DummyGDL | SGL24BA ]
+    
+    set Material id = 0
+    ####
+    subsection DummyGDL
+        set Oxygen diffusion coefficient, [cm^2/s] = 0.22
+        set Electrical conductivity, [S/cm] = 40
+    end
+    ####   
+  end
+  
+  ####
+   
+end
+######################################################################
+subsection Output Variables
+  set Compute boundary responses = true
+  set num_output_vars = 1
+  #set Output_var_0 = electronic_electrical_potential
+end
+
+######################################################################
+subsection Output
+  subsection Data
+    set Output format  = vtk
+    set Print solution = true
+  end
+  subsection Grid
+    set Format = eps
+  end
+end
+
+
+################################
+################################
+################################
+################################
+
+
+</pre>
+<p>The key disadvantage of using the .prm file is that for the parameters that have options, it is not possible to see the option that are available, therefore the use of the GUI is
+strongly suggested for users.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">3. Introduction to AppOhmic</a><ul>
+<li><a class="reference internal" href="#introduction">3.1. Introduction</a></li>
+<li><a class="reference internal" href="#governing-equation">3.2. Governing equation</a></li>
+<li><a class="reference internal" href="#ohmic-example-directory-structure">3.3. Ohmic Example Directory structure</a></li>
+<li><a class="reference internal" href="#setting-up-an-ohmic-simulation">3.4. Setting up an ohmic simulation</a><ul>
+<li><a class="reference internal" href="#setting-up-a-simulation-using-the-openfcst-graphical-user-interface-gui">3.4.1. Setting up a simulation using the OpenFCST graphical user interface (GUI)</a></li>
+<li><a class="reference internal" href="#setting-up-a-simulation-using-a-text-prm-file">3.4.2. Setting up a simulation using a text (.prm) file</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../cathode/Secanell_EA07_MultiVariable_Optimization_PEMFC_Cathodes_Agglomerate_Model/readme.html"
+                        title="previous chapter">2.6.2. Example: Optimization of an agglomerate cathode electrode</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../Pemfc/readme.html"
+                        title="next chapter">4. Introduction to AppPemfc</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/ohmic/readme.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../Pemfc/readme.html" title="4. Introduction to AppPemfc"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../cathode/Secanell_EA07_MultiVariable_Optimization_PEMFC_Cathodes_Agglomerate_Model/readme.html" title="2.6.2. Example: Optimization of an agglomerate cathode electrode"
+             >previous</a> |</li>
+        <li><a href="../index.html">Tutorial v0.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright Energy Systems Design Laboratory, 2015.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

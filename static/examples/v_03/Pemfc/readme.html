@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5. Introduction to AppPemfc &mdash; Tutorial v0.3 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'v0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Tutorial v0.3 documentation" href="../index.html" />
+    <link rel="next" title="5.4.1. Running a membrane electrode assembly model with a macro-homogeneous CL" href="homogeneous/readme.html" />
+    <link rel="prev" title="4. Introduction to AppOhmic" href="../ohmic/readme.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="homogeneous/readme.html" title="5.4.1. Running a membrane electrode assembly model with a macro-homogeneous CL"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../ohmic/readme.html" title="4. Introduction to AppOhmic"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Tutorial v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="introduction-to-apppemfc">
+<h1>5. Introduction to AppPemfc<a class="headerlink" href="#introduction-to-apppemfc" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>5.1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This application simulates the complete Membrane Electrode Assembly (MEA) with a half channel-half landing geometry. A schematic of the geometry in 2D is shown below,</p>
+<a class="reference internal image-reference" href="../_images/domain.png"><img alt="alternate text" class="align-center" src="../_images/domain.png" style="width: 445.0px; height: 385.5px;" /></a>
+<p>This application is an isothermal model of the MEA and can be used to analyze the performance of the MEA under specified operating conditions, generate a polarization curve as well as do optimization studies on the complete MEA.
+if temperature effects are important in the cell under consideration, then we advise to use the AppPemfcNIThermal which accounts for the temperature effects on the governing equations.</p>
+</div>
+<div class="section" id="governing-equations">
+<h2>5.2. Governing equations<a class="headerlink" href="#governing-equations" title="Permalink to this headline">¶</a></h2>
+<p>The model is based on the following assumptions:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>The fuel cell is at steady state and operates at constant temperature and pressure.</li>
+<li>The cathode is fed with humidified air.</li>
+<li>The anode is fed with humidified hydrogen.</li>
+<li>The gas diffusion layers are composed of a porous fibrous matrix.</li>
+<li>The catalyst layer is formed by agglomerates made of mixture of platinum supported on carbon and ionomer membrane electrolyte and surrounded by void space.</li>
+<li>The electochemical reaction occurs inside the agglomerates.</li>
+<li>The transport of reactants from the gas channels to the catalyst layer occurs only by diffusion of reactant gas to the agglomerate surface and then by dissolution and diffusion through the ionomer to the reaction site.</li>
+<li>The transport of water inside the electrolyte in the membrane and CL is modeled using Springer&#8217;s model.</li>
+<li>The membrane and gas phase in the CL are assumed to be in equilibrium throughout the CL, therefore they are related by means of the sorption isotherm.</li>
+<li>The transport of protons takes place only through the electrolyte, i.e. the Nafion and it is governed by Ohm&#8217;s law.</li>
+<li>The transport of electrons takes place only through the solid phase, i.e. the carbon fibers in the GDL and the mixture of carbon supported platinum in the catalyst layer, and is governed by Ohm&#8217;s law.</li>
+</ol>
+</div></blockquote>
+<p>The governing equations are</p>
+<div class="math">
+<p><img src="../_images/math/86f9b5f8b8f0d049a68282fe9356cbd441020a38.png" alt="R_1(\vec{u}) = \nabla \cdot(c_gD^{eff}_{O_2} \nabla x_{O_2})  - S_{O_2} = 0"/></p>
+</div><div class="math">
+<p><img src="../_images/math/bf6fa445d8d9c68dff3168384d51561d94631b58.png" alt="R_2(\vec{u}) = \nabla \cdot(c_gD^{eff}_{w} \nabla x_{w})  - (S_{w} + S_{\lambda} ) = 0"/></p>
+</div><div class="math">
+<p><img src="../_images/math/517e5d8a078668425113a57f7d13a6854837b847.png" alt="R_3(\vec{u}) = \nabla \cdot(\sigma^{eff}_{m} \nabla \phi_m)  - S_{H^+} = 0"/></p>
+</div><div class="math">
+<p><img src="../_images/math/4f42bcfed4ce4bb5e19ac3086c4416548d0ecb11.png" alt="R_4(\vec{u}) = \nabla \cdot(\sigma^{eff}_{S} \nabla \phi_S)    - S_{e^-} = 0"/></p>
+</div><div class="math">
+<p><img src="../_images/math/cd81e15ad4b8a80bc11f617a1017d66e48c8f38e.png" alt="R_5(\vec{u}) = \nabla \left( n_d \frac{\sigma_m}{F} \nabla \phi_m + \frac{\rho_{dry}}{EW} D_{\lambda} \nabla \lambda \right) +S_{\lambda} = 0"/></p>
+</div><p>where the unknowns are the oxygen mole fraction, <img class="math" src="../_images/math/3c7b35b88a4543f663dd747b0c71f8a61374475c.png" alt="x_{O_2}"/>; the water mole fraction, <img class="math" src="../_images/math/9c5fa9ce2472638d57bf95e838ad974f6fd25135.png" alt="x_w"/>; the electrolyte (membrane) and electronic potentials, <img class="math" src="../_images/math/16e8b2eb407a05e54ac13f7f4f22f03b96462747.png" alt="\phi_m"/> and <img class="math" src="../_images/math/b43427fa88326577f1236b83d799d973cb00476d.png" alt="\phi_S"/> respectively;
+and, the membrane water content, <img class="math" src="../_images/math/1ab0134b6e0837594649c75a2ed83cfd85a2d03d.png" alt="\lambda"/>. The effective transport parameters <img class="math" src="../_images/math/4286aacdb938fd3a42af78dca7e827c65ea038f5.png" alt="D^{eff}_{O_2}"/>, <img class="math" src="../_images/math/eed5592b2b1e2c11105486dd514ccf511f0e8049.png" alt="D^{eff}_{w}"/>, <img class="math" src="../_images/math/c60c34a8d6d66b743d318e494b9d0264c04c0a71.png" alt="\sigma^{eff}_{m}"/> and <img class="math" src="../_images/math/b83524d8a86000a0492a6b16a149a7d7db1a0b00.png" alt="\sigma^{eff}_{S}"/> are different in the membrane,
+GDL and CL and depend nonlinearly on the design variables. Due to the solution methodology, all equations need to be solved in all the domains, i.e. GDL, CL and membrane.
+However, some equations are not necessary in some of the cell domains. This is addressed by making the unnecessary transport parameters almost zero.</p>
+<p>The source terms in the system of equations are given by</p>
+<div class="math">
+<p><img src="../_images/math/905aa7144c893ec6a4c977c381365641a92f3a77.png" alt="S_{O_2} = \left\{
+\begin{array}{cl}
+0 &amp;\text{in anode CL, GDL and membrane} \\
+\frac{1}{4F}\nabla \cdot \vec{i} &amp;\text{in CL}
+\end{array}
+\right."/></p>
+</div><div class="math">
+<p><img src="../_images/math/0f84a16f82f53a7b028e4248d50f6ea007e3ba98.png" alt="S_{w} = \left\{
+\begin{array}{cl}
+0 &amp;\text{in anode CL, GDL and membrane} \\
+-\frac{1}{2F}\nabla \cdot \vec{i} &amp;\text{in cathode CL}
+\end{array}
+\right."/></p>
+</div><div class="math">
+<p><img src="../_images/math/bea35d182f0de1f75c8de034fb0541ceacb5b715.png" alt="S_{H^+} = \left\{
+\begin{array}{cl}
+0 &amp;\text{in GDL and membrane} \\
+\nabla \cdot \vec{i} &amp;\text{in cathode CL} \\
+- \nabla \cdot \vec{i} &amp;\text{in anode CL}
+\end{array}
+\right."/></p>
+</div><div class="math">
+<p><img src="../_images/math/2ac9d9880fea1ec96f2da635fb27d46b1482061d.png" alt="S_{e^-} = \left\{
+\begin{array}{cl}
+0 &amp;\text{in GDL and membrane} \\
+-\nabla \cdot \vec{i} &amp;\text{in cathode CL} \\
+\nabla \cdot \vec{i} &amp;\text{in anode CL}
+\end{array}
+\right."/></p>
+</div><p>and</p>
+<div class="math">
+<p><img src="../_images/math/721fdf1904a179b2e3b9030633ceef4671b5e0b7.png" alt="S_{\lambda} = \left\{
+\begin{array}{cl}
+0 &amp;\text{in GDL and membrane} \\
+k\frac{\rho_{dry}}{EW}(\lambda_{eq} - \lambda) &amp;\text{in both CLs}
+\end{array}
+\right."/></p>
+</div><p>where <img class="math" src="../_images/math/4b98d1f641b9ba32184e63ff26d596dc4c1fd128.png" alt="\lambda_{eq}"/> is given by the sorption isotherm reported by Hinatsu et al. at the corresponding water vapour activity value in the specific location in the CL. For a more detailed description
+of the model see references <a class="reference internal" href="#secanell08">Secanell08</a> , <a class="reference internal" href="#secanell10">Secanell10</a> and <a class="reference internal" href="#moore14">Moore14</a>.</p>
+<p>The same application can be used to solve problems with a variety of GDL, MPL and CL parameters, different kinetic models, and CL micro-structures (see reference <a class="reference internal" href="#moore14">Moore14</a> ). Several examples below
+illustrate how to run the application in order to solve the different cases.</p>
+</div>
+<div class="section" id="example-directory-structure">
+<h2>5.3. Example Directory structure<a class="headerlink" href="#example-directory-structure" title="Permalink to this headline">¶</a></h2>
+<p>The cathode directory consists of the following folders:</p>
+<p>1. template : This folder contains the default files for running all the examples in the other folders. Please <strong>do not</strong> modify this file as
+it will result in all tests failing. If you would like to create your own example either include this file to your simulation using the <em>include</em>
+command or copy the file to a different location.</p>
+<p>2. analysis : This folder contains the <code class="code docutils literal"><span class="pre">main_test.prm</span></code> and <code class="code docutils literal"><span class="pre">data_test.prm</span></code> files needed to run a simulation at a given cell voltage.
+Note the data file includes the template find and adds the necessary modifications.</p>
+</div>
+<div class="section" id="setting-up-a-simulation">
+<h2>5.4. Setting up a simulation<a class="headerlink" href="#setting-up-a-simulation" title="Permalink to this headline">¶</a></h2>
+<p>See AppCathode to learn how to setup a simulation with either the OpenFCST GUI or via text files.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="homogeneous/readme.html">5.4.1. Running a membrane electrode assembly model with a macro-homogeneous CL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agglomerate/readme.html">5.4.2. Running a membrane electrode assembly model with an agglomerate CL</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="references">
+<h2>5.5. References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<ol class="upperalpha simple" id="secanell08" start="13">
+<li>Secanell, R. Songprakorp, A. Suleman and N. Djilali, &#8220;Multi-Objective Optimization of a Polymer Electrolyte Fuel Cell Membrane Electrode Assembly&#8221;, Energy and Environmental Sciences, 1(3):378-388, 2008.</li>
+</ol>
+<ol class="upperalpha simple" id="secanell10" start="13">
+<li>Secanell, R. Songprakorp, N. Djilali, A. Suleman, &#8220;Optimization of a proton exchange membrane fuel cell membrane electrode assembly&#8221;. Structural and Multidisciplinary Optimization, 40(1-6) 563-583, 2010</li>
+</ol>
+<ol class="upperalpha simple" start="13">
+<li>Moore, P. Wardlaw, P. Dobson, J.J. Boisvert, A. Putz, R.J. Spiteri, M. Secanell, &#8220;Understanding the Effect of Kinetic and Mass Transport Processes in Cathode Agglomerates&#8221;, Journal of The Electrochemical Society, 161(8):E3125-E3137, 2014.</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">5. Introduction to AppPemfc</a><ul>
+<li><a class="reference internal" href="#introduction">5.1. Introduction</a></li>
+<li><a class="reference internal" href="#governing-equations">5.2. Governing equations</a></li>
+<li><a class="reference internal" href="#example-directory-structure">5.3. Example Directory structure</a></li>
+<li><a class="reference internal" href="#setting-up-a-simulation">5.4. Setting up a simulation</a></li>
+<li><a class="reference internal" href="#references">5.5. References</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../ohmic/readme.html"
+                        title="previous chapter">4. Introduction to AppOhmic</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="homogeneous/readme.html"
+                        title="next chapter">5.4.1. Running a membrane electrode assembly model with a macro-homogeneous CL</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/Pemfc/readme.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="homogeneous/readme.html" title="5.4.1. Running a membrane electrode assembly model with a macro-homogeneous CL"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../ohmic/readme.html" title="4. Introduction to AppOhmic"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Tutorial v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright Energy Systems Design Laboratory, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

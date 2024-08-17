@@ -1,0 +1,707 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>7. Introduction to Microscale Simulations &mdash; Tutorial v0.3 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'v0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Tutorial v0.3 documentation" href="../index.html" />
+    <link rel="next" title="8. Introduction to AppPemfcTPSaturation" href="../PemfcTPSaturation/readme.html" />
+    <link rel="prev" title="6. Introduction to AppPemfcNIThermal" href="../PemfcNIThermal/readme.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../PemfcTPSaturation/readme.html" title="8. Introduction to AppPemfcTPSaturation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../PemfcNIThermal/readme.html" title="6. Introduction to AppPemfcNIThermal"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Tutorial v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="introduction-to-microscale-simulations">
+<h1>7. Introduction to Microscale Simulations<a class="headerlink" href="#introduction-to-microscale-simulations" title="Permalink to this headline">¶</a></h1>
+<p>Microstructure simulations have been introduced in <strong>OpenFCST release v0.3</strong>. OpenFCST provides tools to generate meshes from image stacks and then perform diffusion, diffusion with reaction boundary condition and electron transport simulations on the generated meshes. <strong>OpenFCST</strong> uses a VTK mesh generator using the TVTK library <a class="footnote-reference" href="#id10" id="id1">[1]</a>. This example illustrates the different steps from generating a mesh from images to setting up and running simulations.</p>
+<p>The steps covered in this tutorial are:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Generating a VTK mesh using <strong>PythonFCST</strong></li>
+<li>Diffusion based simulation in <strong>OpenFCST</strong></li>
+<li>Electron transport simulation in <strong>OpenFCST</strong></li>
+</ol>
+</div></blockquote>
+<div class="section" id="generating-a-vtk-mesh-using-pythonfcst">
+<h2>7.1. Generating a VTK mesh using <strong>PythonFCST</strong><a class="headerlink" href="#generating-a-vtk-mesh-using-pythonfcst" title="Permalink to this headline">¶</a></h2>
+<p>In this example, we will demonstrate how to generate an Unstructured Grid mesh in the Legacy VTK format using the PythonFCST package (which are Python libraries to extend functionality of
+OpenFCST). This utility to generate a VTK mesh is beneficial when a mesh needs to be created from a stack of tiff images (such as those obtained from FIB-SEM, TEM, etc.) or from a 3D numpy array in Python.
+There are two approaches that can be used which are described below</p>
+<div class="section" id="using-the-python-executable-writevtk-py">
+<h3>7.1.1. Using the Python executable <strong>writeVTK.py</strong><a class="headerlink" href="#using-the-python-executable-writevtk-py" title="Permalink to this headline">¶</a></h3>
+<p>PythonFCST comes equipped with a Python executable <strong>writeVTK.py</strong> which reads in a stack of tiff images and generates a Legacy Unstructured Grid file using the pixel values in the images as the material ids for the mesh.
+Before running writeVTK.py it is important that OpenFCST is installed on the system and the OpenFCST environment variables are set using the
+<strong>fcst_env.sh</strong> file in the FCST Install Directory (${FCST_DIR}). To set the environment variables type the following command in the Terminal (or Konsole) from ${FCST_DIR}:</p>
+<div class="code highlight-python"><div class="highlight"><pre>$ . fcst_env.sh
+</pre></div>
+</div>
+<p>Once the environment variables have been set the writeVTK.py should be available as a command line utility. To ensure the environment variable has been set, the following command can be used:</p>
+<div class="code highlight-python"><div class="highlight"><pre>$ writeVTK.py -h
+Usage: writeVTK.py [options]
+
+Options:
+-h, --help            show this help message and exit
+-f FILE, --file=FILE  relative path of the images to be converted
+-b BASENAME, --basename=BASENAME
+                      basename of the image files. Default: &#39;Slice_&#39;  would
+                      mean images with name Slice_001 and so on
+-n NUM                Number of images to be read. Default: 200
+-o OUTPUT             Output file name. Default: test.vtk
+-m MATERIAL, --material=MATERIAL
+                      material id of the phase to be meshed. Default: 0
+-v VOXEL, --voxel=VOXEL
+                      voxel size as x y z
+-e EXTENSION, --extension=EXTENSION
+                      extension for the input files. Default is .tiff
+</pre></div>
+</div>
+<p>The above command generates the help documentation for the writeVTK.py. In order to generate the mesh, the relative folder location from the current working directory for the images needs to be specified with the -f identifier.
+The basename of the images refers to the name of the image without the numerical part and extension. For example, for images named &#8216;Slice_001.tiff&#8217; to &#8216;Slice_100.tiff&#8217; the basename would be <code class="docutils literal"><span class="pre">'Slice_'</span></code>. The number of images to be read in must be specified with the -n identifier.
+The output file name can be specified with the -o identifier. The voxel size which is the dimension in cm per pixel in the X,Y and Z direction is specified with the -v identifier.
+By default the extension for the images is &#8216;.tiff&#8217;. If the images have a different extension then they must be specified with the -e identifier.
+Another important option is the material id which can be specified with the -m option. The material  id represents the pixel value for which the mesh should be generated. The default material id is 0 which corresponds to the black color in a grey-scale image.</p>
+<p>For our example, we will generate a mesh from 10 images in the folder ${FCST_DIR}/examples/microscale/3D_Diffusion/images while the current working directory is ${FCST_DIR}/examples/microscale/3D_Diffusion, the following command is used:</p>
+<div class="code highlight-python"><div class="highlight"><pre>$ writeVTK.py -f images/ -b Slice_ -n 10 -o my_test.vtk -m 0 -v 1e-6 1e-6 1e-6 -e .tiff
+
+==================================================
+==================================================
+=  Points and cells Created
+=  Writing a VTK file
+==================================================
+Calculating Fitted Sphere Size Distribution
+**************************************************
+= Processing dataset
+--------------------------------------------------
+==================================================
+= Calculate PSD
+=  - Pore radius 1e-06
+=  - Pore radius 1.1643739803e-06
+=  - Pore radius 1.32874796059e-06
+=  - Pore radius 1.49312194089e-06
+=  - Pore radius 1.65749592118e-06
+=  - Pore radius 1.82186990148e-06
+=  - Pore radius 1.98624388177e-06
+=  - Pore radius 2.15061786207e-06
+=  - Pore radius 2.31499184237e-06
+=  - Pore radius 2.47936582266e-06
+=  - Pore radius 2.64373980296e-06
+=  - Pore radius 2.80811378325e-06
+=  - Pore radius 2.97248776355e-06
+=  - Pore radius 3.13686174384e-06
+=  - Pore radius 3.30123572414e-06
+=  - Pore radius 3.46560970443e-06
+=  - Pore radius 3.62998368473e-06
+=  - Pore radius 3.79435766503e-06
+=  - Pore radius 3.95873164532e-06
+=  - Pore radius 4.12310562562e-06
+= The file has been successfully written!
+--------------------------------------------------
+Phase with material id: 0  is represented by material id 0 in the mesh file:  my_test.vtk
+time elapsed is  17.7439901829  seconds
+</pre></div>
+</div>
+<p>If the command runs successfully, the above output will be displayed and the mesh file named <strong>my_test.vtk</strong> will be written to the ${FCST_DIR}/examples/microscale/3D_Diffusion (which was the current working directory). In addition to generating the mesh, the code also calculates the local radius based on a sphere fitting algorithm <a class="footnote-reference" href="#id11" id="id2">[2]</a> of the phase and stores it in the generated mesh which will be later used in OpenFCST to account for the local Knudsen effects in the diffusion simulations.</p>
+</div>
+<div class="section" id="using-the-mesh-module-in-pythonfcst">
+<h3>7.1.2. Using the <strong>MESH module in PythonFCST</strong><a class="headerlink" href="#using-the-mesh-module-in-pythonfcst" title="Permalink to this headline">¶</a></h3>
+<p>For people who are familiar with Python, using the <strong>PythonFCST.mesh</strong> module might be another option to generate the mesh. The mesh module contains the
+Grid Generator class which generates the VTK mesh. The arguments to be supplied are a 3D numpy array (argument name: image) and the output filename (argument name: filename).
+This provides a bit more flexibility to use any 3D numpy array which might have been generated from any source rather than being limited to a stack of tiff images.</p>
+<p>For the purpose of this example, we would deal with the same set of images as above. Let&#8217;s use the <strong>PythonFCST.mesh</strong> module to generate the mesh. The code snippet below describes how to use it for the example,</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="c1">#Initial imports for libraries and modules</span>
+
+<span class="kn">import</span> <span class="nn">PythonFCST.mesh.PhaseGenerator</span> <span class="kn">as</span> <span class="nn">grid</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="c1">#Defining variables to read in images; Omit this section if you already have a 3D array</span>
+
+<span class="n">foldername</span> <span class="o">=</span> <span class="s2">&quot;images&quot;</span>
+<span class="n">basename</span> <span class="o">=</span> <span class="s2">&quot;Slice_&quot;</span>
+<span class="n">num_images</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;my_test.vtk&quot;</span>
+<span class="n">name</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="n">foldername</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="n">basename</span><span class="o">+</span><span class="s1">&#39;</span><span class="si">%.3d</span><span class="s1">&#39;</span>
+<span class="n">extension</span><span class="o">=</span><span class="s1">&#39;.tiff&#39;</span>
+<span class="n">tmp</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1">#Looping over images and reading them</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_images</span><span class="p">):</span>
+  <span class="n">filename</span><span class="o">=</span><span class="n">name</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="n">extension</span>
+  <span class="n">tmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">))</span>
+
+<span class="c1">#Generating the 3D numpy array</span>
+<span class="n">image</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+<span class="n">image</span><span class="p">[</span><span class="n">image</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="mi">20</span>   <span class="c1">#changing all non-zero material ids to 20; assuming that pixel value of 0 was the one of interest</span>
+
+<span class="c1">#Generating the VTK mesh using the Mesh module in PythonFCST</span>
+<span class="n">o</span><span class="o">=</span><span class="n">grid</span><span class="p">(</span><span class="n">image</span><span class="p">,</span><span class="n">output</span><span class="p">,</span><span class="n">material</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The generated mesh file: my_test.vtk has the material id 0 from the grey scale images extracted.</p>
+<div class="figure align-left" id="id12">
+<a class="reference internal image-reference" href="../_images/pores.png"><img alt="../_images/pores.png" src="../_images/pores.png" style="width: 727.2px; height: 541.8px;" /></a>
+<p class="caption"><span class="caption-text">Mesh of the pores represented by the black color (pixel value 0) in images</span></p>
+</div>
+<div class="figure align-center" id="id13">
+<a class="reference internal image-reference" href="../_images/boundary.png"><img alt="../_images/boundary.png" src="../_images/boundary.png" style="width: 727.2px; height: 541.8px;" /></a>
+<p class="caption"><span class="caption-text">Representation of the boundary ids [1-6] for the generated mesh</span></p>
+</div>
+<p>The mesh above shows the Knudsen radius of the pores computed and stored in the mesh. The boundary ids in the X, Y and Z direction are 1-2, 3-4 and 5-6 respectively. It is important to know these boundary ids because they will be used in the simulations.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>VTK files invert the X and Y axis from the images. Therefore, if the image had dimensions 20 x 30 in X and Y direction respectively, then the mesh will have dimensions 30 x 20 in the X and Y direction.
+By default, OpenFCST corrects for this so that the voxel sizes entered by user are in the <strong>true</strong> X and Y directions.
+Also, the boundary ids are corrected so that 1-2 are boundary ids in the <strong>true</strong> X direction and in the Y direction for the mesh as seen above.</p>
+<p class="last">The mesh can be further pre-processed using any of the filters in Paraview or Mayavi and could be written to a Legacy VTK file. This would still be compatible with the OpenFCST application.</p>
+</div>
+</div>
+</div>
+<div class="section" id="diffusion-based-simulation-in-openfcst">
+<h2>7.2. Diffusion based simulation in <strong>OpenFCST</strong><a class="headerlink" href="#diffusion-based-simulation-in-openfcst" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="introduction">
+<h3>7.2.1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h3>
+<p>Diffusion based simulations i.e, molecular diffusion, Knudsen diffusion and diffusion with reaction, are implemented in OpenFCST in the application <strong>AppDiffusion</strong>.
+The application is used to simulate gas diffusion in a defined phase, i.e., pores in the microstructures, and can be used to compute the effective diffusivity of the porous media. In addition, the application can also be used to simulate oxygen diffusion with a reaction boundary condition and predict the electrochemical performance in the microstructure assuming that the overpotential losses are negligible.</p>
+</div>
+<div class="section" id="governing-equation">
+<h3>7.2.2. Governing equation<a class="headerlink" href="#governing-equation" title="Permalink to this headline">¶</a></h3>
+<p>The governing equation for the application is based on Fick&#8217;s Law and given by,</p>
+<div class="math">
+<p><img src="../_images/math/624c9d9b33e919c02f929a1233581c98a533433e.png" alt="\bm{\nabla} \cdot (D_{O_2} c_{tot} \bm{\nabla} x_{O_2}) = 0 \quad \in \quad \Omega"/></p>
+</div><p>where <img class="math" src="../_images/math/248761307e7d168747ba8129ac22b1450aff9c40.png" alt="D_{O_2}"/> is the oxygen diffusion coefficient, <img class="math" src="../_images/math/832578d9769d89ccd856e4b9af944d666bcc98de.png" alt="c_{tot}"/> is the total gas concentration (assumed constant), and <img class="math" src="../_images/math/3c7b35b88a4543f663dd747b0c71f8a61374475c.png" alt="x_{O_2}"/> is the molar fraction of oxygen which is also the solution variable for this application.</p>
+<p>If Knudsen effects are not taken into account then <img class="math" src="../_images/math/248761307e7d168747ba8129ac22b1450aff9c40.png" alt="D_{O_2}"/> is the binary diffusion coefficient of oxygen in air.</p>
+<p>If Knudsen effects are to be taken into account then <img class="math" src="../_images/math/248761307e7d168747ba8129ac22b1450aff9c40.png" alt="D_{O_2}"/> is modified to account for the Knudsen effects using the Bosanquet equation,</p>
+<div class="math">
+<p><img src="../_images/math/ecd7af8828f6f793ad61156fdd7dc40b8573de00.png" alt="\frac{1}{D_{O_2}} = \frac{1}{D^{bulk}_{O_2}} + \frac{1}{D^{Kn}_{O_2}}"/></p>
+</div><p>where <img class="math" src="../_images/math/fb3afbdf24774d6924613d78f0d5562aa6fa0de2.png" alt="D^{bulk}_{O_2}"/> is the molecular diffusion coefficient of the oxygen gas mixture (<em>which can be supplied by user or calculated using the Chapman-Enskog theory</em>) and <img class="math" src="../_images/math/a12cf14c2ba4fddd8806f64af3fbc68327bd4f17.png" alt="D^{Kn}_{O_2}"/> is the Knudsen diffusion coefficient computed as follows,</p>
+<div class="math">
+<p><img src="../_images/math/1382ab7ff2e0c49bdec33cb4945b051d94702b38.png" alt="D^{Kn}_{O_2} = \frac{2}{3} r_0 \sqrt{\frac{8RT}{\pi M_{O_2}}}"/></p>
+</div><p>where <img class="math" src="../_images/math/b0153babd6c8369f8469e7f7ed416c511e3a825a.png" alt="r_0"/> is the local pore radius obtained using the pore size distribution algorithm (shown above), <img class="math" src="../_images/math/9d86170e7de539c0ff999de09621ee0c7b6c8ed0.png" alt="R"/> is the universal gas constant, <img class="math" src="../_images/math/6d42c88506b8da39a2a23653aecbfb7c29728063.png" alt="T"/> is the temperature of the gas and <img class="math" src="../_images/math/b5d64665d63d5eda33bf7a6ac74cd2980d2405cb.png" alt="M_{O_2}"/> is the molecular weight of oxygen.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><img class="math" src="../_images/math/a12cf14c2ba4fddd8806f64af3fbc68327bd4f17.png" alt="D^{Kn}_{O_2}"/> is computed internally during execution based on the KnudsenRadius field supplied in the VTK mesh. Currently, only VTK meshes generated using the OpenFCST meshers are supported for accounting for local Knudsen effects in microstructures.</p>
+</div>
+<p>There are two sets of boundary conditions that can be used with AppDiffusion. The first set of boundary conditions are for the case of pure diffusion and given by,</p>
+<div class="math">
+<p><img src="../_images/math/5434c2c9ff5b88562934cb668312e0f10318fa64.png" alt="x_{O_2} &amp; = x_{O_2}^{in}\  \text{on}\ \Gamma_1, \\
+x_{O_2} &amp; = x_{O_2}^{out}\  \text{on}\ \Gamma_2,\ \text{and}\ \\
+(D_{O_2} c_{tot}\bm{\nabla}x_{O_2}) \cdot \vec{n} &amp; = 0 \ \text{everywhere else},"/></p>
+</div><p>where <img class="math" src="../_images/math/726f6cbb6d20c02fe5feb58a57543924eda1d128.png" alt="\Gamma_1"/> is the inlet plane and <img class="math" src="../_images/math/34ebff57c28d5970d8d0c8e4745594f09ec7a696.png" alt="\Gamma_2"/> is the outlet plane opposite to the inlet plane. The governing equation with these BCs are linear and therefore, can be solved using direct solvers such as UMFPACK, MUMPS or iterative solvers such as CG, GMRES.</p>
+<p>The second of boundary conditions are for the case when reaction source terms are added to the oxygen diffusion. For this case the boundary conditions are as follows,</p>
+<div class="math">
+<p><img src="../_images/math/78777cc8076b91345475782b7a0bc2178a87ff0d.png" alt="x_{O_2} &amp; = x_{O_2}^{in}\  \quad \text{at all external walls}, \\
+(-D_{O_2}\bm{\nabla}c_{O_2}) \cdot \vec{n} &amp; = \frac{j}{4F}A_{Pt,s|g} \quad \text{at}\ \Gamma_{s|g}."/></p>
+</div><p>where <img class="math" src="../_images/math/d32c78b759903e3f4bd4fd2ce0b86358f7500c5d.png" alt="j"/> is the current density, <img class="math" src="../_images/math/e5057f60116146897ac1cc9083b3b85d7e5fe2a4.png" alt="A_{Pt,s|g}"/> is a ratio of the area of active platinum surface to the interfacial area between solid and pore and <img class="math" src="../_images/math/99fac886fbe3103337fd2a1ee2170bc9045ba20a.png" alt="\Gamma_{s|g}"/> denotes the solid-pore interface.
+For more details on the calculation of the source term please see <a class="footnote-reference" href="#id11" id="id3">[2]</a>. The boundary conditions and the governing equations form a non-linear system of equations which are linearized using Picard iterations and inner loops are solved using a linear solver such as MUMPS, UMFPACK or CG.</p>
+</div>
+<div class="section" id="setting-up-a-diffusion-simulation-with-without-knudsen-effects">
+<h3>7.2.3. Setting up a diffusion simulation (with &amp; without Knudsen effects)<a class="headerlink" href="#setting-up-a-diffusion-simulation-with-without-knudsen-effects" title="Permalink to this headline">¶</a></h3>
+<p>Once we have the mesh generated using either the above method or any of the other methods, it is time to setup the simulation in OpenFCST. OpenFCST has the Fick&#8217;s binary diffusion model implemented as the application diffusion. This can be used for simulating the flow through one of the phases in the 3D mesh that has been generated earlier. Before, running the simulation it is necessary that the environment variables are updated for the OpenFCST settings as described earlier. Once the environment is setup, we need to setup the parameter files for running the simulation.</p>
+<p>As a first example, we setup a simple diffusion simulation <strong>without Knudsen effects</strong>. This example is contained in the folder ${FCST_DIR}/examples/microscale/3D_Diffusion
+For this the first file is the <strong>main.prm</strong> which is the argument file supplied to the OpenFCST executable. The main.prm file should look like this:</p>
+<pre class="literal-block">
+######################################################################
+#   $Id: main.prm  2011-02-09 secanell $                             #
+#                                                                    #
+#  This file is used to simulate app_diffusion and obtain a          #
+#  a concentration profile                                           #
+#                                                                    #
+#                                                                    #
+#   Copyright (C) 2011 by Marc Secanell                              #
+#                                                                    #
+######################################################################
+######################################################################
+subsection Simulator
+
+  set simulator name = diffusion
+  set simulator parameter file name = data.prm
+  
+  set nonlinear solver name = None
+
+  set Analysis type = Analysis
+  
+end
+######################################################################
+</pre>
+<p>The <strong>main.prm</strong> sets up the overall simulation. The parameters that need to be specified for this tutorial are the simulator name, to <em>diffusion</em>,
+and the type of solver, to <em>Linear</em>. Since the Fick&#8217;s binary diffusion model results in a linear system of equations it does not require the use of non-linear solvers.
+In addition we specify the simulator parameter file to <strong>data.prm</strong> which specifies the necesssary parameters required to carry out the simulation.
+The <strong>data.prm</strong> looks like this:</p>
+<pre class="literal-block">
+######################################################################
+#   $Id: data.prm  2011-02-09 secanell $                             #
+#                                                                    #
+#  This file is used to simulate app_diffusion and obtain a          #
+#  a concentration profile. This file supplies the necessary         #
+#  parameters for the simulation.                                    #
+#                                                                    #
+#   Copyright (C) 2011 by Marc Secanell                              #
+#                                                                    #
+######################################################################
+
+
+###############
+subsection Grid generation
+
+  set Type of mesh = GridExternal  # Cathode | CathodeMPL | GridExternal
+  set File name = my_test.vtk  
+  set File type = vtk
+  set Initial refinement = 0
+  set Sort Cuthill-McKee = false
+ 
+end
+
+###############
+subsection Adaptive refinement
+ set Refinement         = global  #global | adaptive
+ set Number of Refinements                   = 2
+ set Output intermediate solutions           = true
+ set Output final solution                   = true
+ set Output intermediate responses           = true
+ set Use nonlinear solver for linear problem = false
+end
+
+###############
+subsection System management
+
+ set Number of solution variables = 1
+
+ subsection Solution variables
+  set Solution variable 1 = oxygen_molar_fraction
+ end
+
+ subsection Equations
+  set Equation 1 = Ficks Transport Equation - oxygen
+ end
+
+end
+
+###############
+subsection Equations
+
+ subsection Ficks Transport Equation - oxygen
+
+  subsection Initial data
+   set oxygen_molar_fraction = 0: 0.1   # where 0 indicates the material_id setup in the grid and 0.1 is the oxygen molar fraction
+  end
+
+  subsection Boundary data
+   set oxygen_molar_fraction = 3: 0.4, 4:0.01   # where 3 &amp; 4 denote the boundary ids and 0.4 and 0.01 are the oxygen molar fraction
+  end
+ end
+
+
+end
+
+###############
+subsection Discretization
+  set Element = FESystem[FE_Q(1)] #FESystem[FE_Q(3)-FE_Q(1)^2] #FESystem[FE_Q(1)^3] #System of three fe
+  subsection Matrix
+    set Quadrature cell = -1
+    set Quadrature face = -1
+  end
+  subsection Residual
+    set Quadrature cell = -1
+    set Quadrature face = -1
+  end
+end
+
+###############
+subsection Fuel cell data
+  
+  ####
+  subsection Operating conditions
+     set Temperature cell [K] = 353
+     set Cathode pressure [Pa] = 101265 # (1 atm)
+     set Cathode relative humidity = 0.6
+  end
+  ####
+ 
+  ####
+  subsection Cathode gas diffusion layer
+  
+    set Gas diffusion layer type = DummyGDL #[ DesignFibrousGDL | DummyGDL | SGL24BA ]
+    
+    set Material id = 0
+    ####
+    subsection DummyGDL
+        set Oxygen diffusion coefficient, [cm^2/s] = 0.22
+    end
+    ####   
+  end
+  
+  ####
+   
+end
+###############
+subsection Output Variables
+
+  set Compute boundary responses = true
+  set num_output_vars = 1
+  set Output_var_0 = oxygen_molar_fraction
+
+end 
+
+###############
+subsection Output
+  subsection Data
+    set Output format  = vtu
+    set Print solution = true
+  end
+  subsection Grid
+    set Format = eps
+  end
+end
+
+
+################################
+
+</pre>
+<p>The <strong>data.prm</strong> comprises of several important parameters which can be modified to affect the simulation.
+The first section is the <strong>Grid generation</strong> where the <em>Type of mesh</em> needs to be specified as
+<em>GridExternal</em> because we are supplying a user-defined mesh and also, the
+<em>File name  &amp; File type</em> are specified based on the mesh generated earlier.</p>
+<p>The next section is the <strong>Adaptive refinement</strong> where the option can be set for number of refinements in the solution as well as the various file output options can be changed.</p>
+<p>The next section is <strong>System management</strong> where information with respect to the equations and solution variables is provided. For the Fick&#8217;s diffusion model, we will just have one solution variable.
+However, the gas to be simulated can be modified by changing the name of the solution variable and the equation. For list of gases that can be simulated refer to <em>PureGas.cc</em>.
+For our example, we use a oxygen diffusion in nitrogen (default) which is specified as the solution variable and equation.</p>
+<p><strong>Equations</strong> section allows to input the initial and boundary conditions for the model. Although for the diffusion model the initial data is not necessary but it could be supplied just to ensure that the mesh is being read in correctly and appropriate phase is being solved for.
+For this example, we apply Dirichlet boundary conditions on the Boundary ids 1 and 2.</p>
+<p><strong>Discretization</strong> section allows flexibility to change the Finite Element system to be used.</p>
+<p><strong>Fuel cell data</strong> section is required to set the operating conditions.</p>
+<p><strong>Cathode gas diffusion layer</strong> is an important section as it determines how the mesh would be treated. We impose that the mesh being imported is a GDL and that the material id 0 is the phase of interest (on which the equation will be solved).
+There are options to choose from the different <em>Gas diffusion layer type</em> which would define different values of diffusivity for the simulation from the
+OpenFCST database. For our example, we specify a <em>DummyGDL</em> with a diffusion coefficient of 0.22 <img class="math" src="../_images/math/9dff56447b99868a004f826bace38a1c4db60daf.png" alt="cm^2/s"/>.</p>
+<p>The next section is <strong>Output Variables</strong> which is used to specify if the boundary flux is to be computed. By default, the boundary flux is computed on Boundary id 2 for the solution variable which is the molar fraction of oxygen in this case.
+The final section is <strong>Output</strong> where the output formats for the solution file can be specified. In addition, to the VTK files, the solver also outputs the solution as .dat file which contains the solution at the nodal points.</p>
+<p>Once the two parameter files have been setup, they should be placed into the same folder as the VTK mesh file (${FCST_DIR}/examples/microscale/3D_Diffusion) and the following command can be used to run the simulation:</p>
+<div class="code highlight-python"><div class="highlight"><pre>$ fuel_cell-3d.bin main.prm
+</pre></div>
+</div>
+<p>If the simulation runs successfully, the solution files called &#8220;fuel_cell_solution_DataFile_00001_Cycle_*.vtu&#8221; would be written in the same folder.
+These files can be viewed using <strong>Paraview</strong> for further postprocessing. The figure below shows a screenshot of the result,</p>
+<div class="figure align-center" id="id14">
+<a class="reference internal image-reference" href="../_images/diffusion.png"><img alt="../_images/diffusion.png" src="../_images/diffusion.png" style="width: 727.2px; height: 541.8px;" /></a>
+<p class="caption"><span class="caption-text">Oxygen molar fraction profile in the mesh after diffusion simulation</span></p>
+</div>
+<p>Additionally, the oxygen molar flux is also computed and printed to the shell as,</p>
+<div class="code highlight-python"><div class="highlight"><pre>Response oxygen_molar_fraction is : 3.68304e-12
+</pre></div>
+</div>
+<p>This is an important piece of information as it can be used to compute the effective diffusivity of the media using the following relation:</p>
+<div class="math">
+<p><img src="../_images/math/7d1d288ec2649e4b090e9a20d3d564271f3fbb1e.png" alt="D^{eff}_{O_2} = J_{O_2}\frac{L}{A(C^{in}_{O_2}-C^{out}_{O_2})}"/></p>
+</div><p>where <img class="math" src="../_images/math/c61446718a36c23c6aab589486b67d2395aa19ca.png" alt="J_{O_2}"/> is the flux output as shown above, <img class="math" src="../_images/math/0a5711c7a37994043b2bc3bb374adca232491762.png" alt="L"/> is the diffusion length along the concentration gradient <img class="math" src="../_images/math/8dcb03154e28ebb341c9f78d152cf10181fb5b77.png" alt="C^{in}_{O_2}-C^{out}_{O_2}"/> and <img class="math" src="../_images/math/0acafa529182e79b4f56165ec677554fba7fcf98.png" alt="A"/> is the cross-section area.</p>
+<p>Now, to setup a simulation <strong>with Knudsen effects</strong> using the local pore radius (as described in the previous section), we have to make some modifications to the <strong>main.prm</strong> file. In order to include Knudsen effects an additional option called <strong>simulator specification = knudsen</strong> must be specified. The modified main.prm file is shown below,</p>
+<pre class="literal-block">
+######################################################################
+#   $Id: main.prm  2011-02-09 secanell $                             #
+#                                                                    #
+#  This file is used to simulate app_diffusion and obtain a          #
+#  a concentration profile                                           #
+#                                                                    #
+#                                                                    #
+#   Copyright (C) 2011 by Marc Secanell                              #
+#                                                                    #
+######################################################################
+######################################################################
+subsection Simulator
+
+  set simulator name = diffusion
+  set simulator specification = knudsen
+  set simulator parameter file name = data.prm
+  
+  set nonlinear solver name = None
+
+  set Analysis type = Analysis
+  
+end
+######################################################################
+</pre>
+<p>The data.prm file remains the same as above because computation of the Knudsen effects is done internally and no modifications are required from the user in the data.prm file.</p>
+<p>In order to run a simulation with Knudsen, the following command can be executed from the command prompt in the working directory ${FCST_DIR}/examples/microscale/3D_Diffusion</p>
+<div class="code highlight-python"><div class="highlight"><pre>$ fuel_cell-3d.bin main_with_knudsen.prm
+</pre></div>
+</div>
+<p>Once the simulation runs through the oxygen molar flux at the outlet will be calculated and printed to the shell.</p>
+<div class="code highlight-python"><div class="highlight"><pre>Response oxygen_molar_fraction is : 7.23639e-13
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The oxygen flux at the outlet has decreased due to the additional Knudsen resistance introduced in the simulation.</p>
+</div>
+</div>
+<div class="section" id="setting-up-a-diffusion-simulation-with-reaction-boundary-condition">
+<h3>7.2.4. Setting up a diffusion simulation with reaction boundary condition<a class="headerlink" href="#setting-up-a-diffusion-simulation-with-reaction-boundary-condition" title="Permalink to this headline">¶</a></h3>
+<p>The reaction boundary condition described earlier can be used to simulate oxygen diffusion in a microstructure with reaction at the solid-pore interface. A thin fictitious ionomer film is introduced to account for local losses. Details of the model can be found in <a class="footnote-reference" href="#id11" id="id4">[2]</a>.</p>
+<p>The main.prm file for this case looks as follows,</p>
+<div class="highlight-python"><div class="highlight"><pre>######################################################################
+#   $Id: main.prm  2011-02-09 secanell $                             #
+#                                                                    #
+#  This file is used to simulate app_diffusion and obtain a          #
+#  a concentration profile                                           #
+#                                                                    #
+#                                                                    #
+#   Copyright (C) 2011-15 by ESDLab                                  #
+#                                                                    #
+######################################################################
+######################################################################
+subsection Simulator
+
+  set simulator name = diffusion
+  set simulator specification = reaction        #reaction|reaction_and_knudsen|knudsen
+  set simulator parameter file name = data.prm
+
+  set nonlinear solver name = Picard
+
+  set Analysis type = Analysis
+  
+end
+######################################################################
+</pre></div>
+</div>
+<p>The <strong>simulator specification = reaction</strong> for this case. This will simulate the reaction BC without Knudsen effects. Additionally, the simulator specification can be changed to
+<strong>reaction_and_knudsen</strong> (as shown in the comment) which would simulate the reaction BC and take into account the local Knudsen effects.
+As described earlier, that this is a non-linear problem therefore, a non-linear solver must be selected. The option <strong>nonlinear solver name = Picard</strong> specifies the use of Picard iterations.</p>
+<p>Several changes need to be made to the data.prm file to setup the additional parameters for the simulation. The updated data.prm file looks as follows,</p>
+<pre class="literal-block">
+######################################################################
+#   $Id: $
+#
+#  This file is used to simulate a diffusion application
+#  on a 3D Mesh.
+#  Copyright (C) 2015 by Marc Secanell
+#
+######################################################################
+
+######################################################################
+
+include ../template/data.prm
+
+######################################################################
+
+######################################################################
+subsection Discretization
+  set Boundary fluxes = true 
+end
+######################################################################
+
+######################################################################
+subsection Picard
+ set Under-relaxation = true
+ set Alpha  = 6
+ set Gamma min  = 0.3
+ set Max steps = 10000
+ set Absolute tolerance = 1e-7
+ set Relative tolerance = 1e-5
+end
+######################################################################
+
+######################################################################
+
+subsection Equations
+
+ subsection Ficks Transport Equation - oxygen
+
+  subsection Initial data
+   set oxygen_molar_fraction = 0: 0.1   # where 0 indicates the material_id setup in the grid and 100 is the concentration of solute in mol/cm^3
+  end
+
+  subsection Boundary data
+   set species_flux = 0:1
+   set oxygen_molar_fraction = 1: 0.161, 2: 0.161, 3: 0.161, 4: 0.161, 5: 0.161, 6: 0.161       # where 1 - 6 denote the boundary ids and 0.161 is oxygen molar fraction at these boundary ids
+  end
+  
+  subsection Reaction data
+   set Electronic potential,[V] = 0.2
+   set Protonic potential,[V] = 0
+   set Type of kinetics = DoubleTrapKinetics
+   set Reaction name = ORR
+   set Ionomer dissolution constant,[cm/s] = 10
+   set Ionomer film thickness,[cm] = 10e-7
+   set A_Pt,s|g = 20
+  end
+ end
+end
+######################################################################
+
+######################################################################
+subsection Output Variables
+ set Compute boundary responses = true
+ set Output boundary id = 0
+ set num_output_vars = 1
+ set Output_var_0 = oxygen_molar_fraction
+end
+######################################################################
+</pre>
+<p>The first line in the data.prm includes the template. Therefore, all the parameters presented in the previous section are included and then only the parameters which are required for this example are changed.
+Since the reaction occurs at the solid-pore boundary and the reaction term is a boundary flux <em>Boundary fluxes</em> parameter in the <strong>Discretization</strong> section is set to <em>true</em>.</p>
+<p>As defined in the main.prm the Picard solver is used to solve the non-linear problem. The section <strong>Picard</strong> in the parameter file defines some of parameters for under-relaxation and convergence tolerance for the solution variable.</p>
+<p>The most important section is the <strong>Equations-&gt;Ficks Transport Equation - oxygen</strong> where the necessary parameters for the reaction boundary condition need to be defined.
+The <strong>Initial data</strong> subsection is important for this problem because it is a non-linear problem so a good initial guess is important for the solution. The <em>set oxygen_molar_fraction = 0:0.1</em> sets the initial oxygen molar fraction in material id 0 which is the pore space for the mesh to 0.1.
+The <strong>Boundary data</strong> subsection has two entries. The <em>set oxygen_molar_fraction = 1: 0.161, 2: 0.161, 3: 0.161, 4: 0.161, 5: 0.161, 6: 0.161</em> sets the oxygen molar fraction boundary condition on the boundary ids 1-6. The <em>set species_flux = 0:1</em> sets boundary id 0 (which is the boundary id for the solid-pore interface; default value by deal.II) as the boundary where the reaction flux is applied.
+<strong>Reaction data</strong> section sets the electronic and protonic potentials for the simulations. The kinetics method is for computation of the current density is selected as <em>DoubleTrapKinetics</em> which is a multi-step model for the oxygen reduction reaction (ORR). <em>Ionomer dissolution constant</em> and <em>Ionomer film thickness</em> define the fictitious ionomer properties at the interface and <em>A_Pt,s|g</em> is the ratio of active area of platinum to the interface area of the solid-void interface.</p>
+<p><strong>Output Variables</strong> section is modified partially to change the <em>Output boundary id</em> to <em>0</em> because we want the flux of oxygen reacting at the solid-pore interface as the output to compute the total current from the simulations.</p>
+<p>With these paramters when the simulation is run the output response is,</p>
+<div class="code highlight-python"><div class="highlight"><pre>Response oxygen_molar_fraction is : 1.57756e-14
+</pre></div>
+</div>
+<p>This translates to a total current of 6.08e-9 A using Faraday&#8217;s Law. The figure below shows the oxygen profile screenshot from the simulation,</p>
+<div class="figure align-center" id="id15">
+<a class="reference internal image-reference" href="../_images/reaction.png"><img alt="../_images/reaction.png" src="../_images/reaction.png" style="width: 727.2px; height: 541.8px;" /></a>
+<p class="caption"><span class="caption-text">Oxygen molar fraction profile in the mesh after diffusion with reaction simulation</span></p>
+</div>
+</div>
+<div class="section" id="additional-examples">
+<h3>7.2.5. Additional examples<a class="headerlink" href="#additional-examples" title="Permalink to this headline">¶</a></h3>
+<p>More examples for the microstructures and simulation results reported in Sabharwal et al. <a class="footnote-reference" href="#id11" id="id5">[2]</a> are provided in the folder ${FCST_DIR}/examples/microscale/Sabharwal_Analysis_of_FC_CL_2016/.
+The folder contains two folders namely, Diffusion and Reaction.</p>
+<p>Diffusion folder contains the parameter files to simulate the diffusion with and without Knudsen effects and is similar to the example above. The meshes for Stack 1 and Stack 2 from <a class="footnote-reference" href="#id11" id="id6">[2]</a> can be downloaded from the <a class="reference external" href="http://www.openfcst.mece.ualberta.ca/download.html">OpenFCST website</a>.</p>
+<p>Reaction folder contains the parameter files used for the section 3.3.1 for the publication <a class="footnote-reference" href="#id11" id="id7">[2]</a>. In order to run the entire polarization curve the variable <strong>Equations-&gt;Ficks Transport Equation - oxygen-&gt;Reaction data-&gt;Electronic potential</strong> should be varied from 0.9-0.25 V and the output can be converted to the current density using the data provided in <a class="footnote-reference" href="#id11" id="id8">[2]</a>. The mesh used for section 3.3.1 titled <em>Mesh1.vtk</em> can be downloaded from the <a class="reference external" href="http://www.openfcst.mece.ualberta.ca/download.html">OpenFCST website</a>.</p>
+</div>
+</div>
+<div class="section" id="electron-transport-simulation-in-openfcst">
+<h2>7.3. Electron transport simulation in <strong>OpenFCST</strong><a class="headerlink" href="#electron-transport-simulation-in-openfcst" title="Permalink to this headline">¶</a></h2>
+<p>Similar to the diffusion application electron transport can be simulated in the solid-phase of the microstructures using OpenFCST application <strong>AppOhmic</strong>. Please check the AppOhmic documentation and examples page for more information on running those simulations.</p>
+<p class="rubric">References</p>
+<table class="docutils footnote" frame="void" id="id10" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td><ol class="first last upperalpha simple" start="16">
+<li>Ramachandran and G. Varoquaux, <em>Computing in Science &amp; Engineering</em>, 2011, 13, 40–51.</li>
+</ol>
+</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id11" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td><ol class="first last upperalpha simple" start="13">
+<li>Sabharwal, L. M. Pant, A. Putz, D. Susac, J. Jankovic and M. Secanell, <em>Fuel Cells</em>, 2016</li>
+</ol>
+</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">7. Introduction to Microscale Simulations</a><ul>
+<li><a class="reference internal" href="#generating-a-vtk-mesh-using-pythonfcst">7.1. Generating a VTK mesh using <strong>PythonFCST</strong></a><ul>
+<li><a class="reference internal" href="#using-the-python-executable-writevtk-py">7.1.1. Using the Python executable <strong>writeVTK.py</strong></a></li>
+<li><a class="reference internal" href="#using-the-mesh-module-in-pythonfcst">7.1.2. Using the <strong>MESH module in PythonFCST</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#diffusion-based-simulation-in-openfcst">7.2. Diffusion based simulation in <strong>OpenFCST</strong></a><ul>
+<li><a class="reference internal" href="#introduction">7.2.1. Introduction</a></li>
+<li><a class="reference internal" href="#governing-equation">7.2.2. Governing equation</a></li>
+<li><a class="reference internal" href="#setting-up-a-diffusion-simulation-with-without-knudsen-effects">7.2.3. Setting up a diffusion simulation (with &amp; without Knudsen effects)</a></li>
+<li><a class="reference internal" href="#setting-up-a-diffusion-simulation-with-reaction-boundary-condition">7.2.4. Setting up a diffusion simulation with reaction boundary condition</a></li>
+<li><a class="reference internal" href="#additional-examples">7.2.5. Additional examples</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#electron-transport-simulation-in-openfcst">7.3. Electron transport simulation in <strong>OpenFCST</strong></a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../PemfcNIThermal/readme.html"
+                        title="previous chapter">6. Introduction to AppPemfcNIThermal</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../PemfcTPSaturation/readme.html"
+                        title="next chapter">8. Introduction to AppPemfcTPSaturation</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/microscale/readme.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../PemfcTPSaturation/readme.html" title="8. Introduction to AppPemfcTPSaturation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../PemfcNIThermal/readme.html" title="6. Introduction to AppPemfcNIThermal"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Tutorial v0.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright Energy Systems Design Laboratory, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

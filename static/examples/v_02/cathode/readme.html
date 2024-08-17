@@ -1,0 +1,639 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>2. Introduction to AppCathode &mdash; Tutorial v0.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'v0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Tutorial v0.2 documentation" href="../index.html" />
+    <link rel="next" title="2.6.1. Example: Optimization of a macro-homogeneous cathode electrode (Ref: Secanell, Electrochimica Acta, 2007)" href="Secanell_EA07_Numerical_Optimization_PEMFC_Cathode_Electrodes/readme.html" />
+    <link rel="prev" title="1. Getting started" href="../getting_started.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="Secanell_EA07_Numerical_Optimization_PEMFC_Cathode_Electrodes/readme.html" title="2.6.1. Example: Optimization of a macro-homogeneous cathode electrode (Ref: Secanell, Electrochimica Acta, 2007)"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../getting_started.html" title="1. Getting started"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Tutorial v0.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="introduction-to-appcathode">
+<h1>2. Introduction to AppCathode<a class="headerlink" href="#introduction-to-appcathode" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>2.1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>AppCathode is the simplest of the openFCST application. It is used to study mass and charge transport in a cathode electrode. Different catalyst layer models can be evaluated including:</p>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li>macro-homogeneous catalyst layer model</li>
+<li>agglomerate catalyst layer model.</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="governing-equations">
+<h2>2.2. Governing equations<a class="headerlink" href="#governing-equations" title="Permalink to this headline">¶</a></h2>
+<p>The governing equations are</p>
+<div class="math">
+<p><img src="../_images/math/78235b4af4344c87b534d98bdfa7b1dbf84c3f1d.png" alt="R_1(\vec{u}) = \nabla \cdot (c_{total}D^{eff}_{O_2} \nabla x_{O_2} ) = \frac{1}{nF}\nabla\cdot i"/></p>
+</div><div class="math">
+<p><img src="../_images/math/3d4645cd5adf54c37b9d3eab577e8bbbfa73e93e.png" alt="R_2(\vec{u}) = \nabla \cdot (\sigma^{eff}_{m}\nabla\phi_m) = \nabla \cdot i"/></p>
+</div><div class="math">
+<p><img src="../_images/math/4061292b16528f7dccf0c59f526bb46eeaba5926.png" alt="R_3(\vec{u}) = \nabla \cdot (\sigma^{eff}_{s}\nabla\phi_s) = -\nabla \cdot i"/></p>
+</div><p>where, for the case of a macro-homogeneous catalyst layer,</p>
+<div class="math">
+<p><img src="../_images/math/e7b0459a730d4cee0058684d40947b862b13c40c.png" alt="\nabla \cdot i = A_v i^{ref}_0 \left( \frac{c_{O_2}} {c^{ref}_{O_2}} \right) \mbox{exp} \left( \frac{\alpha F}{RT}(\phi_m - \phi_s) \right)"/></p>
+</div><p>and for the case of the agglomerate, reference a below provides a more detailed formulation.</p>
+<p>The solution variables are the protonic potential, <img class="math" src="../_images/math/0f25c1382e8ba625c0b788c2cd74e39febee44d7.png" alt="\phi_m"/>, the electronic potential, <img class="math" src="../_images/math/5be95b57d16033654e62796146724cd990fc57d1.png" alt="\phi_s"/> and, instead of the oxygen concentration,
+we use the oxygen molar fraction, <img class="math" src="../_images/math/c43f1fc1436e4ca6540f6b87b348f8fba47d9bcf.png" alt="x_{O_2}"/>, that also accounts for the oxygen dissolving in the ionomer by using Henrys Law.</p>
+<p>The govering equations above are nonlinear and therefore they cannot be solved directly. In OpenFCST, we have decided to solve the system of equations
+using a nonlinear Newton solver. Therefore, instead of implemeting the equations above, a linearization of the governing equations above are solved, i.e.</p>
+<div class="math">
+<p><img src="../_images/math/ef6ff517a9c1cdf4e0e850f285de1425a5194ff4.png" alt="\frac{\partial R_i(\vec{u^{n-1}})}{\partial u_j} u_j = R_i(\vec{u^{n-1}})"/></p>
+</div><p>For more information on the governing equations, discretization and solution methodology please read <a class="reference internal" href="#secanell07a">Secanell07a</a> and <a class="reference internal" href="#secanell07b">Secanell07b</a>.</p>
+</div>
+<div class="section" id="cathode-example-directory-structure">
+<h2>2.3. Cathode Example Directory structure<a class="headerlink" href="#cathode-example-directory-structure" title="Permalink to this headline">¶</a></h2>
+<p>The cathode directory consists of the following folders:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><em>template</em> : This folder contains the default files for running all the examples in the other folders. Please <strong>do not</strong> modify this file as it will result in all tests failing. If you would like to create your own example either include this file to your simulation using the <em>include</em> command or copy the file to a different location.</li>
+<li><em>analysis</em>: This folder contains the <cite>main.prm</cite> and &#8216;data.prm` files needed to run a single analysis. It is a good starting point to learn how to use OpenFCST.</li>
+<li>polarization_curve : This folder contains the <cite>main_test.prm</cite> and <cite>data_test.prm</cite> files needed to run a simulation to obtain a polarization curve. Note the data file includes the template find and adds the necessary modifications. The script to run a test to make sure the polarization curve is running correctly is in the folder <em>regression</em> together with the default data the test is compared to.</li>
+<li>optimization : This filder contains the <tt class="code docutils literal"><span class="pre">main_test.prm</span></tt> and <tt class="code docutils literal"><span class="pre">data_test.prm</span></tt> files needed to run a simulation with Dakota to obtain a polarization curve. The test is used to test the functionality of Dakota. The script to run a test to make sure the polarization curve is running correctly is in the folder <em>regression</em> together with the default data the test is compared to.</li>
+<li>parallel : This folder contains the <tt class="code docutils literal"><span class="pre">main_test.prm</span></tt> and <tt class="code docutils literal"><span class="pre">data_test.prm</span></tt> files needed to run a simulation in parallel. The script to run a test to make sure the polarization curve is  running correctly is in the folder <em>regression</em> together with the default data the test is compared to.</li>
+<li>Secanell_EA07_Numerical_Optimization_PEMFC_Cathode_Electrodes : This folder contains the data files needed to reproduce the results in reference <a class="reference internal" href="#secanell07a">Secanell07a</a>. A detailed description on how to use the files is given below.</li>
+<li>Secanell_EA07_MultiVariable_Optimization_PEMFC_Cathodes_Agglomerate_Model : This folder contains the data files needed to reproduce the results in reference <a class="reference internal" href="#secanell07b">Secanell07b</a>. It also serves as an example on how to setup a cathode catalyst layer with an agglomerate model.</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="setting-up-a-cathode-simulation">
+<h2>2.4. Setting up a cathode simulation<a class="headerlink" href="#setting-up-a-cathode-simulation" title="Permalink to this headline">¶</a></h2>
+<p>In order to run OpenFCST, two files are needed that provide the necessary information for OpenFCST to execute:</p>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li>A main file: This file is used to select the appropriate: a) type of analysis, i.e. analysis, parametric study, polarization curve and optimization study; application; b) the nonlinear solver; c) data file name; and, d) several less critical parameters.</li>
+<li>A data file: This file is used to input all the input data used for the simulation for the application selected.</li>
+</ol>
+</div></blockquote>
+<p>Both these files can either be loaded and modified via the openFCST graphical user interface (GUI) or modified as a text file.</p>
+<div class="section" id="setting-up-a-simulation-using-the-openfcst-graphical-user-interface-gui">
+<h3>2.4.1. Setting up a simulation using the OpenFCST graphical user interface (GUI)<a class="headerlink" href="#setting-up-a-simulation-using-the-openfcst-graphical-user-interface-gui" title="Permalink to this headline">¶</a></h3>
+<p>If you are using the OpenFCST GUI, you will need to load the .xml files. You can generate an .xml file from a .prm file by calling openFCST as follows:</p>
+<div class="code highlight-python"><pre>$ fcst2D -c main.prm</pre>
+</div>
+<p>openFCST will directly parse the main.prm and the associated data and optimization files (if specified in the main.prm file).</p>
+<p>If you would like to use the GUI, first launch the GUI by going to Install/bin and typing:</p>
+<div class="code highlight-python"><pre>$ ./fcst-gui</pre>
+</div>
+<p>Then, select the OpenFCST executable file that you would like the GUI to run, mainly openFCST-2d or openFCST-3d from the /Install/bin folder. Once
+this has been selected, the following screen will appear</p>
+<a class="reference internal image-reference" href="../_images/FCST_Gui_step1.png"><img alt="alternate text" class="align-center" src="../_images/FCST_Gui_step1.png" style="width: 960.0px; height: 540.0px;" /></a>
+<p>At this point, you can load your main.xml and data.xml files. Go to <tt class="docutils literal"><span class="pre">File&gt;</span> <span class="pre">Open</span> <span class="pre">Project...</span></tt> and select the <tt class="docutils literal"><span class="pre">main.xml</span></tt> and <tt class="docutils literal"><span class="pre">data.xml</span></tt> files. If you are planning on running an
+optimization simulation, then also load the <tt class="docutils literal"><span class="pre">opt.xml</span></tt> file, otherwise select <strong>No</strong> to loading a new simulation.</p>
+<p>Once <tt class="docutils literal"><span class="pre">main.xml</span></tt> and <tt class="docutils literal"><span class="pre">data.xml</span></tt> files are loaded, the following will appear in the GUI,</p>
+<a class="reference internal image-reference" href="../_images/FCST_Gui_step2.png"><img alt="alternate text" class="align-center" src="../_images/FCST_Gui_step2.png" style="width: 960.0px; height: 540.0px;" /></a>
+<p>At this point, the GUI will show several folders in the <tt class="docutils literal"><span class="pre">main.xml</span></tt> and <tt class="docutils literal"><span class="pre">data.xml</span></tt> tabs. Each folder contains options that you can modify.
+You can open each folder by clicking on them in order to see the variables that can be modified in each subsection. If you hover over each variable with your mouse,
+a text window will appear explaining the use of each input parameter.</p>
+<div class="section" id="the-main-xml-file">
+<h4>2.4.1.1. The <tt class="docutils literal"><span class="pre">main.xml</span></tt> file<a class="headerlink" href="#the-main-xml-file" title="Permalink to this headline">¶</a></h4>
+<p>The <tt class="docutils literal"><span class="pre">main.xml</span></tt> file contains the following sections:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><em>Simulator</em> : This section is used to select the type of analysis, the type of application, the non-linear solver and if adaptive refinement is needed.</li>
+<li><em>Logfile</em> : This section is used to setup logging options.</li>
+</ol>
+</div></blockquote>
+<p>The section <strong>Simulator</strong> contains the following parameters:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><em>simulator name</em> : This parameter is used to select the application you would like to run. If you double-click on the name, a drop-down menu with all possible applications available will appear. Select the application you would like to run from the menu. In your case, select <em>cathode</em>.</li>
+<li><em>solver name</em> : This parameter is used to specify if the application you are solving is linear or nonlinear. If it is nonlinear several solvers are available. Please select one.</li>
+<li><em>solver method</em> : This parameter is always set to <em>adaptive</em>. The <em>adaptive</em> option allows the user to use adaptive refinement and global refinement options so that the solution is refined during the solution.</li>
+<li><em>Analysis type</em>: This parameter is used to specify if you would like to run at a single voltage, a full polarization curve, a parametric study or an optimization case. For now, we will set this value to <em>Analysis</em>. In the following sections, examples of how to use the other types are given.</li>
+<li><em>simulator parameter file name</em> : This section is <strong>very important</strong>. The name specified here is the name of the <tt class="docutils literal"><span class="pre">data.xml</span></tt> file you would like to use. Make sure that it matches the second Tab in the GUI, otherwise OpenFCST will run a different datafile than the one that appears in the GUI.</li>
+<li><em>simulator specifications</em> : This section is used only if a fluid flow application is used.</li>
+<li>Subsections <em>Optimization</em>, <em>Parametric Study</em>, and <em>Polarization Curve</em> are used to specify parameters that control those types of analysis and will be discussed later.</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="the-data-xml-file">
+<h4>2.4.1.2. The <tt class="docutils literal"><span class="pre">data.xml</span></tt> file<a class="headerlink" href="#the-data-xml-file" title="Permalink to this headline">¶</a></h4>
+<p>The simulation data is shown in the second tab in the GUI. If you started the GUI without any files, clicking next in the GUI would generate a defaul <tt class="docutils literal"><span class="pre">data.xml</span></tt> file.
+If you are starting, it is <strong>highly recommended</strong> that you load the default files in the <tt class="docutils literal"><span class="pre">analysis</span></tt> folder.</p>
+<p>If you have loaded the <tt class="docutils literal"><span class="pre">data.xml</span></tt> file , go to the next tab, i.e. data.xml. The following screen will appear:</p>
+<a class="reference internal image-reference" href="../_images/FCST_Gui_step3_data.png"><img alt="alternate text" class="align-center" src="../_images/FCST_Gui_step3_data.png" style="width: 960.0px; height: 540.0px;" /></a>
+<p>In this screen, you can select the most suitable options to run your simulation. The most important folders are:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><em>Grid Generation</em>: Specify the mesh you would like to use. You can either read a mesh from file (<em>Type of mesh</em>&gt;*External mesh*) or have openFCST create the geometry. In this case we use <em>Cathode</em>. This will generate a mesh for a cathode containing a catalyst layer and a gas diffusion layer. The dimensions of these layers can be specified in the section <em>Internal mesh generator parameters</em>. In this section specify dimensions and the <em>Material ID</em> for the layers. This ID is used in section <em>Fuel Cell Data</em> to assign this section of the mesh the necessary properties.</li>
+<li><em>Discretization</em>: This section is used to specify the type of finite element you would like to use. In this case we use <em>FESystem[FE_Q(1)^3]</em> which means that the three variables/equations &#8211; a Bubnov-Galerkin method is used to discretize the equations &#8211; that we solve for will be discretized using first order Lagrange finite elements. We could use second order by writing <em>FESystem[FE_Q(2)^3]</em>. We could also used mixed elements by writing <em>FESystem[FE_Q(1)^2-FE_Q(2)]</em>. In the later case, the first two variables/equations are discretized using first order Lagrange elements and the other equation using second order Lagrange elements.</li>
+<li><em>System Management</em>: This section is used to specify to OpenFCST the number of equations that will be solved and the physics that are solved for each equation. The section <cite>Solution variables</cite> and the section <cite>Equations</cite> specifies the names of the equations. <strong>Important: Do not touch this subsection as it is dependent on application used.</strong></li>
+<li><em>Equations</em>: This section is used to specify all the necessary information to initialize each one of the equations selected in <cite>System Management</cite>. There is one section per equation. In each equation the following must be specified <cite>Initial data</cite>. The infomration here is used to create an initial solution for nonlinear problems. Provide a list of Material_ID:Value. The Value given will be used to initialize the solution in the section of the mesh with the given Material_ID. <cite>Boundary data</cite> is used to specify the Diritchlet boundary conditions for the problem.</li>
+<li><em>Newton</em>: Specify the options for the Netwon solver (For nonlinear applications only).</li>
+<li><em>Initial Solution</em>: This section is used to provide information on how to initialize the initial solution for nonlinear problems and to specify if the initial solution should be outputed to a file. OpenFCST allows users to run a simulation, store a solution and then use that solution as the initial solution of the next problem. To do so, first set <em>Output initial solution for transfer</em> to true. This will create a hidden file where the solutio is stored. Next, set <em>Read in initial solution from file</em>. Then, the previous solution will be read.</li>
+<li><cite>LinearApplication</cite>: Specify the linear solver and options to solve the linearized problem.</li>
+<li><cite>Fuel cell data</cite>: This is likely <strong>the most important</strong> section for an electrochemist. Here is where all the fuel cell parameters are specified. It is likely this is the only section you would like to modify extensively. This section contains several subsection which are used to select the cell operating conditions, and the parameters for each layer.This section is discussed further below.</li>
+<li><cite>Output</cite>: This section is used to specify the output format for the mesh and the solution. If you want to visualize the solution with <em>Paraview</em>, then you should output the solution in <em>VTK</em> format.</li>
+</ol>
+</div></blockquote>
+<p><em>Fuel cell data</em> contains a section to specify the operating conditions and one per layer. In section <cite>Operating conditions</cite> the user can specify the cell voltage, temperature, gas inlet
+conditions. Some of this conditions are Diritchlet boundary conditions. If the variable <cite>Adjust initial solution and boundary conditions</cite> is set to true, then the values in the
+<cite>Equation</cite> section will be overwritten. Note however, that the values in <cite>Equation</cite> are however necessary to setup the simulation.</p>
+<p>Next are the sections to setup a layer. Let&#8217;s take a look at section <cite>Cathode catalyst layer</cite>. All layer constain an entry <cite>Material id</cite>. This value has to match the value used in the
+mesh to identify the catalyst layer. Next, the parameter <cite>Catalyst layer type</cite> is used to select the catalyst layer that will be used. For each layer type, there is a section below
+where all the parameters can be defined. Similarly to the layer, entries <cite>Catalyst type</cite>, <cite>Catalyst support type</cite>, <cite>Electrolyte type</cite> and <cite>Kinetics type</cite> can be used to select, from a
+drop-down menu, the materials that we would like to use to create the layer. These properties are used, in the case of a ConventionalCL and MicroScale catalyst layer to
+estimate effective transport properties. For each selection, there are sections below that can be used to select parameters that are appropriate for the simulation.
+Section <cite>Generic Data</cite> is used to specify permeability and other data common to all porous materials. Section <cite>PSD parameters</cite> is also used
+to specify the pore-size distribution for the porous layer.</p>
+<p>Once your parameters are set, simply press the <strong>Run</strong> button to launch the simulation. The ouput will be shown in the black screen to the right. The files in the directory also appear in the
+bottom right corner. Configure <em>Paraview</em> to open the .vtu files to analyze the output.</p>
+</div>
+</div>
+<div class="section" id="setting-up-a-simulation-using-a-text-prm-file">
+<h3>2.4.2. Setting up a simulation using a text (.prm) file<a class="headerlink" href="#setting-up-a-simulation-using-a-text-prm-file" title="Permalink to this headline">¶</a></h3>
+<p>If instead of using the GUI, you would like to look at the files using a text editor, the .prm files are move convenient. As discussed, the <strong>main.prm</strong> file is the argument file supplied to the
+<strong>OpenFCST</strong> executable. The main.prm file should look like this:</p>
+<div class="highlight-python"><pre>######################################################################
+#   $Id$
+#
+#  This file is used to simulate a cathode model and to obtain
+#  a polarisation curve. It will call the data_app_cathode_test.prm
+#  file which should produce the results saved in test_results.dat. 
+#  Please do not modify this file, it should only be used to run 
+#  the test case.
+#
+#
+#   Copyright (C) 2011 by Marc Secanell
+#
+######################################################################
+
+subsection Simulator
+
+  set simulator name = cathode
+  set simulator parameter file name = data.prm
+  
+  set solver name = Newton3pp
+
+  set Analysis type = PolarizationCurve
+
+  ################################################
+  subsection Polarization Curve
+    set Initial voltage [V] = 0.94
+    set Final voltage [V] = 0.59
+    set Increment [V] = 0.0377777778
+    set Min. Increment [V] = 0.01
+  end  
+  ################################################
+  
+  ######################################################################
+  subsection Optimization
+    set optimization parameter file name = opt.prm
+  end
+  ######################################################################
+  
+end</pre>
+</div>
+<p>The data.prm file for the cathode example is shown below:</p>
+<div class="highlight-python"><pre>######################################################################
+#   $Id: $
+#
+#  This file is used to simulate an cathode and to obtain
+#  a single point on a polarisation curve. It is based on 
+#  the test case and will be called by the 
+#  main_app_cathode_analysis.prm file. 
+#
+#   Copyright (C) 2011-13 by Marc Secanell
+#
+######################################################################
+
+######################################################################
+subsection Grid generation
+
+  set Type of mesh = Cathode  # Cathode | CathodeMPL | GridExternal
+
+  set Initial refinement = 2
+  set Sort Cuthill-McKee = false
+  
+  ####  
+  subsection Internal mesh generator parameters
+    ####
+    subsection Dimensions
+       set Cathode current collector width [cm] = 0.1
+       set Cathode channel width [cm] = 0.1
+       set Cathode CL thickness [cm] =  1.0e-3 #1.18e-3
+       set Cathode MPL thickness [cm] =  2.0e-3 #1.18e-3
+       set Cathode GDL thickness [cm] = 0.01 #10.0e-2 #
+    end
+    ####
+    subsection Material ID
+       set Cathode GDL = 2
+       set Cathode CL = 4
+    end
+    ####
+    subsection Boundary ID
+     set c_CL/Membrane = 1
+     set c_BPP/GDL = 2
+     set c_Ch/GDL = 3
+     set c_GDL/CL = 255
+    end
+    ####
+  end
+  ####
+end
+######################################################################
+
+######################################################################
+subsection Initial Solution
+  set Read in initial solution from file = false
+  set Output initial solution = false
+  set Output solution for transfer = false
+end
+######################################################################
+
+######################################################################
+subsection Adaptive refinement
+  set Number of Refinements = 4
+  set Refinement         = adaptive  #global | adaptive 
+  set Output initial mesh = false
+  set Output intermediate solutions = false
+  set Output intermediate responses = false
+  set Output final solution = false
+end
+######################################################################
+
+######################################################################
+subsection Newton
+  set Assemble threshold = 0.0
+  set Debug level        = 0
+  set Debug residual     = false
+  set Debug solution     = false
+  set Debug update       = false
+  set Max steps          = 100
+  set Reduction          = 1.e-20
+  set Tolerance          = 1.e-8
+end
+######################################################################
+
+######################################################################
+subsection System management
+
+ set Number of solution variables = 3
+
+ subsection Solution variables
+  set Solution variable 1 = oxygen_molar_fraction
+  set Solution variable 3 = electronic_electrical_potential
+  set Solution variable 2 = protonic_electrical_potential
+ end
+
+ subsection Equations
+  set Equation 1 = Ficks Transport Equation - oxygen
+  set Equation 3 = Electron Transport Equation
+  set Equation 2 = Proton Transport Equation
+ end
+
+end
+######################################################################
+
+#####################################################################
+subsection Equations
+
+ subsection Ficks Transport Equation - oxygen
+
+  subsection Initial data
+   set oxygen_molar_fraction = 2: 1.0, 4: 1.0
+  end
+
+  subsection Boundary data
+   set oxygen_molar_fraction = 3: 1.0
+  end
+
+ end
+
+ subsection Electron Transport Equation
+
+  subsection Initial data
+   set electronic_electrical_potential = 2: 0.7, 4: 0.7
+  end
+
+  subsection Boundary data
+   set electronic_electrical_potential = 2: 0.7 # V
+  end
+
+ end
+
+ subsection Proton Transport Equation
+
+  subsection Initial data
+   set protonic_electrical_potential = 2: 0.0, 4: 0.0
+  end
+
+  subsection Boundary data
+   set protonic_electrical_potential = 1: 0.0 # V
+  end
+
+ end
+
+end
+#####################################################################
+
+######################################################################
+subsection Discretization
+  set Element = FESystem[FE_Q(1)^3] #FESystem[FE_Q(3)-FE_Q(1)^2] #FESystem[FE_Q(1)^3] #System of three fe
+  subsection Matrix
+    set Quadrature cell = -1
+    set Quadrature face = -1
+  end
+  subsection Residual
+    set Quadrature cell = -1
+    set Quadrature face = -1
+  end
+end
+
+######################################################################
+
+######################################################################
+subsection Fuel cell data
+  
+  ####
+  subsection Operating conditions
+     set Adjust initial solution and boundary conditions = true
+     set Temperature cell = 353 #[K]
+     set Cathode pressure = 101265 #[Pa] (1 atm)
+     set Cathode relative humidity = 0.6
+     set Voltage cell = 0.7 #828 ## Convergence up to 0.66V
+  end
+  ####
+ 
+  ####
+  subsection Cathode gas diffusion layer
+  
+    set Gas diffusion layer type = DummyGDL #[ DesignFibrousGDL | DummyGDL | SGL24BA ]
+    
+    set Material id = 2
+    ####
+    subsection DummyGDL
+        set Oxygen diffusion coefficient, [cm^2/s] = 0.22
+        set Electrical conductivity, [S/cm] = 40
+    end
+    ####   
+  end
+  
+  ####
+   subsection Cathode catalyst layer
+  
+    set Material id = 4
+
+    set Catalyst layer type = DummyCL   #[ DummyCL | AgglomerateCL | HomogeneousCL ]
+
+    set Catalyst type = Platinum
+    set Catalyst support type = CarbonBlack
+    set Electrolyte type = Nafion
+    
+    subsection Materials
+      
+      subsection Platinum
+        set Cathodic transfer coefficient (ORR) = 1 
+        #set Method for kinetics parameters (ORR) = Given
+        #set Reference exchange current density (ORR) [uA/cm2] = 1.1495E-1        
+        #set Reference oxygen concentration (ORR) = 1.2e-6 #(includes henrys) 
+      end  
+    end
+    ##
+    ##
+    subsection DummyCL
+      set Oxygen diffusion coefficient, [cm^2/s] = 4:0.0108934499 
+      set Electrical conductivity, [S/cm] = 4:12.00845293 
+      set Protonic conductivity, [S/cm] = 4:0.00910831814 
+      set Active area [cm^2/cm^3] = 4:341183.43125 
+    end 
+    ##
+    
+  end
+end
+######################################################################
+
+######################################################################
+subsection Output Variables
+  set num_output_vars = 1
+  set Output_var_0 = current
+  set Output_var_1 =t_m_Pt
+end
+
+######################################################################
+
+######################################################################
+subsection Output
+  subsection Data
+    set Output format = vtu #tecplot
+  end
+  subsection Grid
+    set Format = eps
+  end
+end
+######################################################################
+
+######################################################################
+######################################################################
+
+</pre>
+</div>
+<p>The key disadvantage of using the .prm file is that for the parameters that have options, it is not possible to see the options that are available, therefore the use of the GUI is
+strongly suggested for users.</p>
+</div>
+</div>
+<div class="section" id="obtaining-a-polarization-curve">
+<h2>2.5. Obtaining a polarization curve<a class="headerlink" href="#obtaining-a-polarization-curve" title="Permalink to this headline">¶</a></h2>
+<p>In order to obtain a polarization curve, the <cite>main.xml</cite> file needs to be modified as follows</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Go to section <tt class="docutils literal"><span class="pre">Simulator</span></tt> and set the variable <tt class="docutils literal"><span class="pre">Analysis</span> <span class="pre">type</span></tt> to <tt class="docutils literal"><span class="pre">Polarization</span> <span class="pre">Curve</span></tt></li>
+<li>In section <cite>Polarization Curve</cite> setup the initial and final voltage and the increment between points.</li>
+</ol>
+</div></blockquote>
+<p>An example <cite>main.prm</cite> file is given below:</p>
+<div class="highlight-python"><pre>######################################################################
+#   $Id$
+#
+#  This file is used to simulate a cathode model and to obtain
+#  a polarisation curve. It will call the data_app_cathode_test.prm
+#  file which should produce the results saved in test_results.dat. 
+#  Please do not modify this file, it should only be used to run 
+#  the test case.
+#
+#
+#   Copyright (C) 2011 by Marc Secanell
+#
+######################################################################
+
+subsection Simulator
+
+  set simulator name = cathode
+  set simulator parameter file name = data.prm
+  
+  set solver name = Newton3pp
+
+  set Analysis type = PolarizationCurve
+
+  ################################################
+  subsection Polarization Curve
+    set Initial voltage [V] = 0.94
+    set Final voltage [V] = 0.59
+    set Increment [V] = 0.0377777778
+    set Min. Increment [V] = 0.01
+  end  
+  ################################################
+  
+end</pre>
+</div>
+<p>Once the <cite>main.xml</cite> or <cite>.prm</cite> file has been modified, run the simulation.</p>
+</div>
+<div class="section" id="additional-examples">
+<h2>2.6. Additional Examples<a class="headerlink" href="#additional-examples" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Secanell_EA07_Numerical_Optimization_PEMFC_Cathode_Electrodes/readme.html">2.6.1. Example: Optimization of a macro-homogeneous cathode electrode (Ref: Secanell, Electrochimica Acta, 2007)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Secanell_EA07_Numerical_Optimization_PEMFC_Cathode_Electrodes/readme.html#references">2.6.1.1. References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Secanell_EA07_MultiVariable_Optimization_PEMFC_Cathodes_Agglomerate_Model/readme.html">2.6.2. Example: Optimization of an agglomerate cathode electrode</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Secanell_EA07_MultiVariable_Optimization_PEMFC_Cathodes_Agglomerate_Model/readme.html#polarization-curve">2.6.2.1. Polarization curve</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Secanell_EA07_MultiVariable_Optimization_PEMFC_Cathodes_Agglomerate_Model/readme.html#the-main-xml-file">2.6.2.1.1. The <tt class="docutils literal"><span class="pre">main.xml</span></tt> file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Secanell_EA07_MultiVariable_Optimization_PEMFC_Cathodes_Agglomerate_Model/readme.html#results">2.6.2.1.2. Results</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Secanell_EA07_MultiVariable_Optimization_PEMFC_Cathodes_Agglomerate_Model/readme.html#optimization-study">2.6.2.2. Optimization study</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Secanell_EA07_MultiVariable_Optimization_PEMFC_Cathodes_Agglomerate_Model/readme.html#id1">2.6.2.2.1. The <tt class="docutils literal"><span class="pre">main.xml</span></tt> file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Secanell_EA07_MultiVariable_Optimization_PEMFC_Cathodes_Agglomerate_Model/readme.html#the-opt-xml-file">2.6.2.2.2. The <tt class="docutils literal"><span class="pre">opt.xml</span></tt> file</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="references">
+<h2>2.7. References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<ol class="upperalpha simple" id="secanell07a" start="13">
+<li>Secanell, B. Carnes, A. Suleman and N. Djilali, &#8220;Numerical Optimization of Proton Exchange Membrane Fuel Cell Cathode Electrodes&#8221;, Electrochimica Acta, 52(7):2668-2682, 2007.</li>
+</ol>
+<ol class="upperalpha simple" id="secanell07b" start="13">
+<li>Secanell, K. Karan, A. Suleman and N. Djilali, &#8220;Multi-Variable Optimization of PEMFC Cathodes using an Agglomerate Model&#8221;, Electrochimica Acta, 52(22):6318-6337, 2007.</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">2. Introduction to AppCathode</a><ul>
+<li><a class="reference internal" href="#introduction">2.1. Introduction</a></li>
+<li><a class="reference internal" href="#governing-equations">2.2. Governing equations</a></li>
+<li><a class="reference internal" href="#cathode-example-directory-structure">2.3. Cathode Example Directory structure</a></li>
+<li><a class="reference internal" href="#setting-up-a-cathode-simulation">2.4. Setting up a cathode simulation</a><ul>
+<li><a class="reference internal" href="#setting-up-a-simulation-using-the-openfcst-graphical-user-interface-gui">2.4.1. Setting up a simulation using the OpenFCST graphical user interface (GUI)</a><ul>
+<li><a class="reference internal" href="#the-main-xml-file">2.4.1.1. The <tt class="docutils literal"><span class="pre">main.xml</span></tt> file</a></li>
+<li><a class="reference internal" href="#the-data-xml-file">2.4.1.2. The <tt class="docutils literal"><span class="pre">data.xml</span></tt> file</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#setting-up-a-simulation-using-a-text-prm-file">2.4.2. Setting up a simulation using a text (.prm) file</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#obtaining-a-polarization-curve">2.5. Obtaining a polarization curve</a></li>
+<li><a class="reference internal" href="#additional-examples">2.6. Additional Examples</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#references">2.7. References</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../getting_started.html"
+                        title="previous chapter">1. Getting started</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="Secanell_EA07_Numerical_Optimization_PEMFC_Cathode_Electrodes/readme.html"
+                        title="next chapter">2.6.1. Example: Optimization of a macro-homogeneous cathode electrode (Ref: Secanell, Electrochimica Acta, 2007)</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/cathode/readme.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="Secanell_EA07_Numerical_Optimization_PEMFC_Cathode_Electrodes/readme.html" title="2.6.1. Example: Optimization of a macro-homogeneous cathode electrode (Ref: Secanell, Electrochimica Acta, 2007)"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../getting_started.html" title="1. Getting started"
+             >previous</a> |</li>
+        <li><a href="../index.html">Tutorial v0.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright Energy Systems Design Laboratory, 2015.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
