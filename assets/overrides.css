@@ -12,9 +12,26 @@
     --background-3: hsl(0, 0%, 75%);
 
     /* Misc. */
-    --page-width: 980px;
+    --page-width: 1280px;
     --border-radius: 0.5em;
     --transition: 0.5s cubic-bezier(.25,.8,.25,1);
+}
+
+body {
+    & > main {
+        display: grid;
+        grid-area: main;
+        grid-template-columns: 2fr 1fr;
+        grid-template-areas: "main sidebar";
+        gap: 1em;
+
+        /* Sidebar */
+        & > aside {
+            grid-area: sidebar;
+            width: 100%;
+        }
+
+    }
 }
 
 .sponsors {
@@ -28,3 +45,12 @@
     }
 }
 
+/* Mobile */
+@media screen and (max-width: 800px) {
+    body > main {
+        grid-template-columns: auto;
+        grid-template-areas:
+            "main"
+            "sidebar";
+    }
+}

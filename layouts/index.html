@@ -12,8 +12,4 @@
     </section>
 
     {{ partial "slideshow.html" (index (where .Site.Pages "Section" "about") 0)}}
-
-    <h1>Sponsors</h1>
-    <p>{{ .Site.Title }} is thankful to the following organizations for providing funding for our research:</p>
-    {{ partial "sponsors.html" (index (where .Site.Pages "Section" "sponsors") 0)}}
 {{ end }}
