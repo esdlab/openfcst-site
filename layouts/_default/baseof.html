@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.Language }}">
+	<head>
+        {{ partialCached "meta.html" . }}
+
+        <title>
+            {{ block "title" . }}
+                {{ .Title }} &ndash; {{ .Site.Title }}
+            {{ end }}
+        </title>
+	</head>
+	<body>
+        {{ partialCached "nav.html" . .Section }}
+        {{ block "page" . }}
+            <div class="nav-spacer"></div>
+            <main>
+                <div>
+                    <header id="main-header">
+                        {{ block "header" . }}
+                            <h5>{{ .Title | title }}</h5>
+                        {{ end }}
+                    </header>
+                    {{ block "main" . }}{{ end }}
+                </div>
+                {{ partialCached "sidebar.html" . }}
+            </main>
+        {{ end }}
+        {{ partialCached "footer.html" . }}
+	</body>
+</html>
