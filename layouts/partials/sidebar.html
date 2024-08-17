@@ -1,5 +1,19 @@
 <aside>
-    <h1>This is a sidebar</h1>
-    <p>It's a great place to put extra content that you want to be visible on every page.</p>
+    {{ range (where .Site.Sections "Section" "sidebar") }}
+        <section>
+        {{ range .Pages }}
+            <h1>{{ .Title }}</h1>
+                {{ range .RegularPages }}
+                    <div>
+                        <h3>{{ .Title }}</h3>
+                        {{ .Content }}
+                    </div>
+                {{ end }}
+        {{ end }}
+        </section>
+    {{ end }}
+    <section>
+        <h1>Sponsors</h1>
+        {{ partialCached "sponsors.html" . }}
+    </section>
 </aside>
-
