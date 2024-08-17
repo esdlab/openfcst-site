@@ -28,6 +28,11 @@ name = "Documentation"
 pageRef = "/docs"
 weight = 4
 
+[[menus.nav]]
+name = "Authors"
+pageRef = "/authors"
+weight = 5
+
 # Footer Links
 [[menus.footer]]
 name = "ESDLab"
