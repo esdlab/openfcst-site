@@ -4,6 +4,9 @@ baseURL = "https://openfcst.org/"
 languageCode = "en-us"
 disableKinds = ["taxonomy", "term"]
 
+[markup.goldmark.renderer]
+    unsafe = true
+
 # Navigation Bar Links
 [[menus.nav]]
 name = "Home"
