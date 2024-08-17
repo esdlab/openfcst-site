@@ -4,10 +4,6 @@ baseURL = "https://openfcst.org/"
 languageCode = "en-us"
 disableKinds = ["taxonomy", "term"]
 
-[params]
-    customCSS = ["overrides.css"]
-    customJS = [""]
-
 # Navigation Bar Links
 [[menus.nav]]
 name = "Home"
