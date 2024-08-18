@@ -7,9 +7,9 @@
 {{ end }}
 
 {{ define "main" }}
+    {{ partial "slideshow.html" (index (where .Site.Pages "Section" "about") 0)}}
     <section id="post-content">
         {{ .Content }}
     </section>
 
-    {{ partial "slideshow.html" (index (where .Site.Pages "Section" "about") 0)}}
 {{ end }}
