@@ -1,0 +1,28 @@
+{{ define "main" }}
+    {{ partial "contents.html" . }}
+
+    {{ range .RegularPages }}
+        <article class="release">
+            <section>
+                <h1 id="{{ .Title | urlize }}">{{ .Title | title }}</h1>
+
+                {{ with .Resources }}
+                    <div class="files">
+                        {{ range . }}
+                            <li>
+                                <a href="{{ .RelPermalink }}">{{ .Name }}</a>
+                            </li>
+                        {{ end }}
+                    </div>
+                {{ end }}
+
+                <p>{{ .Content }}</p>
+            </section>
+            <aside>
+                {{ range $key, $value := .Params.links }}
+                    <a href="{{ $value }}"><button>{{ $key | title }}</button></a>
+                {{ end }}
+            </aside>
+        </article>
+    {{ end }}
+{{ end }}
