@@ -51,6 +51,41 @@ body {
     }
 }
 
+/* Downloads Page */
+article.release {
+    background-color: var(--background-2);
+    border-radius: var(--border-radius);
+    padding: 1em;
+    margin-bottom: 1em;
+
+    .files .file {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5em;
+        row-gap: 0.5em;
+
+        &:not(:last-child) {
+            border-bottom: 2px dotted var(--background-3);
+        }
+
+        &:hover {
+            background-color: var(--background-3);
+        }
+
+        /* Icon */
+        a::before {
+            display: inline-block;
+            vertical-align: middle;
+            width: 1.75em;
+            margin-right: 0.5em;
+            aspect-ratio: 1/1;
+            content: "";
+            background-image: url("/download.svg");
+        }
+    }
+}
+
 /* Mobile */
 @media screen and (max-width: 800px) {
     body > main {
@@ -58,5 +93,11 @@ body {
         grid-template-areas:
             "main"
             "sidebar";
+    }
+
+    article.release .files .file {
+        text-align: left;
+        align-items: flex-start;
+        flex-direction: column;
     }
 }

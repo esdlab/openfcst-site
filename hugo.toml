@@ -4,6 +4,10 @@ baseURL = "https://openfcst.org/"
 languageCode = "en-us"
 disableKinds = ["taxonomy", "term"]
 
+[params]
+#   github_repo = "esdlab/openfcst-site"
+    github_repo = "dealii/dealii"
+
 [markup.goldmark.renderer]
     unsafe = true
 
