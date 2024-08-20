@@ -1,28 +1,36 @@
 {{ define "main" }}
     {{ partial "contents.html" . }}
 
-    {{ range .RegularPages }}
-        <article class="release">
-            <section>
-                <h1 id="{{ .Title | urlize }}">{{ .Title | title }}</h1>
-
-                {{ with .Resources }}
-                    <div class="files">
-                        {{ range . }}
-                            <li>
-                                <a href="{{ .RelPermalink }}">{{ .Name }}</a>
-                            </li>
-                        {{ end }}
+    {{ $page := .Page }}
+    {{ $api := printf "https://api.github.com/repos/%s/releases" .Site.Params.github_repo }}
+    {{ $data := dict }}
+    {{ with resources.GetRemote $api }}
+        {{ with .Err }}
+            {{ errorf "%s" . }}
+        {{ else }}
+            {{ $data = . | transform.Unmarshal }}
+            {{ range $data }}
+                <article class="release">
+                    <h1 id="{{ .name | urlize }}">{{ .name | title }}</h1>
+                    <div id="post-content">
+                        <p>{{ .body | $page.RenderString }}</p>
                     </div>
-                {{ end }}
-
-                <p>{{ .Content }}</p>
-            </section>
-            <aside>
-                {{ range $key, $value := .Params.links }}
-                    <a href="{{ $value }}"><button>{{ $key | title }}</button></a>
-                {{ end }}
-            </aside>
-        </article>
+                    {{ with .assets }}
+                        <div class="files">
+                            {{ range . }}
+                                <div class="file">
+                                    <a href="{{ .browser_download_url }}">{{ .name }}</a>
+                                    <span style="text-align: right">{{ printf "%.2f" (div .size 1000000.0) }} MB &middot; {{ time.Format "Jan 2, 2006" (time.AsTime .updated_at) }}</span>
+                                </div>
+                            {{ end }}
+                        </div>
+                    {{ end }}
+                </article>
+            {{ end }}
+        {{ end }}
+    {{ else }}
+        {{ $fallback := printf "https://github.com/%s/releases" .Site.Params.github_repo }}
+        <a href="{{ $fallback }}">Redircting to GitHub. Click here if you are not redirected.</a>
+        <meta http-equiv="refresh" content="0; URL={{ $fallback }}">
     {{ end }}
 {{ end }}
