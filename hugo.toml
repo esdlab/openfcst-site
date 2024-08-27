@@ -23,9 +23,14 @@ pageRef = "/about"
 weight = 2
 
 [[menus.nav]]
+name = "News"
+pageRef = "/news"
+weight = 3
+
+[[menus.nav]]
 name = "Downloads"
 pageRef = "/downloads"
-weight = 3
+weight = 4
 
 [[menus.nav]]
 name = "Documentation"
@@ -35,12 +40,12 @@ weight = 5
 [[menus.nav]]
 name = "Authors"
 pageRef = "/authors"
-weight = 5
+weight = 6
 
 # Footer Links
 [[menus.footer]]
 name = "ESDLab"
-pageRef = "https://ualberta.ca"
+pageRef = "https://esdlab.github.io"
 weight = 1
 
 [[menus.footer]]
