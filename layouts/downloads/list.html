@@ -9,13 +9,16 @@
             {{ errorf "%s" . }}
         {{ else }}
             {{ $data = . | transform.Unmarshal }}
-            {{ range $data }}
+            {{ range $index, $el := $data }}
                 <article class="release">
-                    <h1 id="{{ .name | urlize }}">{{ .name | title }}</h1>
+                    {{ if eq $index 0 }}
+                        <div class="tags"><span>Latest</span></div>
+                    {{ end }}
+                    <h1 id="{{ $el.name | urlize }}">{{ .name | title }}</h1>
                     <div id="post-content">
-                        <p>{{ .body | $page.RenderString }}</p>
+                        <p>{{ $el.body | $page.RenderString }}</p>
                     </div>
-                    {{ with .assets }}
+                    {{ with $el.assets }}
                         <div class="files">
                             {{ range . }}
                                 <div class="file">
