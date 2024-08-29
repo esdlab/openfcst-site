@@ -26,8 +26,8 @@ Use this directory for assets that do not belong in the [content/ directory](/co
 For an example of this, see [Changing Logo](#changing-logo), or the links on the [documentation page](docs/_index.md).
 
 ### Home Page
-- To change the text written on the home page, edit the [content/\_index.md](content/_index.md) file in this directory.
-- To change the images in the home page's slideshow, see the [About Page README](/about)
+- To change the text written on the home page, edit the [\_index.md](_index.md) file in this directory.
+- To change the images in the home page's slideshow, see the [About Page README](content/about)
 
 ### Changing Logo
 To change the logo displayed in the navigation bar and footer, edit [/layouts/partials/logo.html](/layouts/partials/logo.html).  
