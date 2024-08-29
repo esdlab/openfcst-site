@@ -21,7 +21,8 @@ _For example, `<RESEARCH PROJECT NAME>` should be replaced with the name of the 
 The following sections explain how to make specific changes that do not fit in the aforementioned categories.
 
 ### Static Directory
-Any files in the [static/ directory](/static) are copied to the root directory of the webpage when it is deployed.  
+Any files in the [static/ directory](/static) are copied to the root directory of the webpage when it is deployed. Any paths should be relative to the `static` directory, i.e. do not include the word `static` in the path, and start with a `/`.
+
 Use this directory for assets that do not belong in the [content/ directory](/content).  
 For an example of this, see [Changing Logo](#changing-logo), or the links on the [documentation page](docs/_index.md).
 
