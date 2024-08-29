@@ -1,5 +1,5 @@
 # Changing Home Page Slideshow Photos
-Due to limitations in Hugo, the photos on the home page slideshow is located in the [/about](/content/about) directory.
+Due to limitations in Hugo, the photos on the home page slideshow are located in the [/about](/content/about) directory.
 
 All images (any format) placed in this directory will be displayed in a slideshow, in alphabetical order by file name.
 
