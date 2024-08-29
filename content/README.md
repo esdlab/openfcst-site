@@ -9,14 +9,12 @@ To add new content or modify existing content on the webpage, please view the `R
 In each section, anything enclosed within angle brackets (`< >`) should be replaced with the appropriate content.  
 _For example, `<RESEARCH PROJECT NAME>` should be replaced with the name of the research project._
 
-- [Facilities](facilities)
-- [Labs](labs)
+- [About](about)
+- [Authors](authors)
+- [Documentation](docs)
+- [Downloads](downloads)
 - [News](news)
-- [Opportunities](opportunities)
-- [People](people)
-- [Publications](publications)
-- [Research](research)
-- [Software](software)
+- [Sidebar](sidebar)
 - [Sponsors](sponsors)
 
 ## Miscellaneous
@@ -25,7 +23,7 @@ The following sections explain how to make specific changes that do not fit in t
 ### Static Directory
 Any files in the [static/ directory](/static) are copied to the root directory of the webpage when it is deployed.  
 Use this directory for assets that do not belong in the [content/ directory](/content).  
-For an example of this, see [Changing Logo](#changing-logo).
+For an example of this, see [Changing Logo](#changing-logo), or the links on the [documentation page](docs/_index.md).
 
 ### Changing Logo
 To change the logo displayed in the navigation bar and footer, edit [/layouts/partials/logo.html](/layouts/partials/logo.html).  
@@ -61,19 +59,13 @@ weight = 1
 ### Favicon
 The favicon displayed in the tab for the webpage is located in [/assets/favicon.ico](/assets/favicon.ico). Replace this file, but do not change the file name.
 
-### Background (of Landing Page)
-The background video/image on the landing page is dictated by the files in the [/assets/hero](/assets/hero) directory.
-- **To Use an Image**  
-Place exactly one image (any format) in the directory, with no other files.
-- **To Use a Video**  
-Place exactly one video (any format) and one fallback image (any format) in the directory, with no other files.
+### Home Page Slideshow
+Please see the [About Page README](/about)
 
 ### CSS Stylesheets
 The styles for the webpage are located in [/assets/overrides.css](/assets/overrides.css). Unlike the HTML of this webpage, this stylesheet is regular CSS with nothing special. The `:root` style defines colors used throughout the page.
 
 If there is a change you want to make that isn't in this stylesheet, it is likely in the [theme's stylesheet](https://github.com/jadc/lab-theme/blob/main/assets/base_style.css); it is unlikely you should change this file, and anything in [/assets/overrides.css](/assets/overrides.css) will override this file.
-
-Avoid modifying the [/assets/scholar.css](/assets/scholar.css) file. It is used to style the graphs scraped from Google Scholar.
 
 ### Figures
 
