@@ -45,6 +45,8 @@ The current group of OpenFCST developers is formed by:
 
 * **S. Matterns**<sup>a</sup>, Undergraduate, Contribution to the OpenFCST: GUI enhancements.
 
+* **J. Chehimi**<sup>a</sup>, Undergraduate, Contribution to the OpenFCST: Dockerfile and installation wizard.
+
 <hr>
 
 <sup>a</sup> Energy Systems Design Laboratory, University of Alberta, Canada.
