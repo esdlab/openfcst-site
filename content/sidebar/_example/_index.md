@@ -1,6 +1,6 @@
 +++
-title = "Opportunities"
-weight = 1
+title = "Example Sidebar Category"
+weight = 2
 [build]
     render = "never"
 [[cascade]]

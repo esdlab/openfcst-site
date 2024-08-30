@@ -3,12 +3,13 @@ title = "OpenFCST"
 baseURL = "https://openfcst.org/"
 languageCode = "en-us"
 disableKinds = ["taxonomy", "term"]
-
-[params]
-    github_repo = "esdlab/openfcst-site"
+ignoreFiles = ["README.md", "_example"]
 
 [markup.goldmark.renderer]
-    unsafe = true
+unsafe = true
+
+[params]
+github_repo = "esdlab/openfcst-site"
 
 # Navigation Bar Links
 [[menus.nav]]
