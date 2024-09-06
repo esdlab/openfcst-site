@@ -8,10 +8,10 @@ If you have any questions, feel free to open an issue or e-mail jchehimi(at)ualb
 
 To contribute new content, follow the steps below:
 
-1. Clone the repository:
+1. Clone the repository (the `--recurse-submodules` flag is required):
 
 ```bash
-git clone https://github.com/esdlab/openfcst-site.git
+git clone --recurse-submodules https://github.com/esdlab/openfcst-site.git
 ```
 
 2. You are not allowed to push changes directly to the `main` branch.  
